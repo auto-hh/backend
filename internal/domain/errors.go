@@ -45,7 +45,7 @@ func NewBadRequest(code AppErrorCode, message string, errs ...error) AppError {
 	return NewAppError(TypeBadRequest, code, message, errs...)
 }
 
-func NewInternalError(code AppErrorCode, message string, errs ...error) AppError {
+func NewInternalServerError(code AppErrorCode, message string, errs ...error) AppError {
 	return NewAppError(TypeInternalServerError, code, message, errs...)
 }
 
