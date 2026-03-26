@@ -1,7 +1,14 @@
 package service
 
+import (
+	"context"
+
+	"github.com/auto-hh/backend/internal/model"
+	"github.com/google/uuid"
+)
+
 type IAuth any
 
 type ILLM interface {
-	FindVacancies() error
+	FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Vacancy, error)
 }
