@@ -4,9 +4,8 @@ import (
 	"net/http"
 
 	"github.com/auto-hh/backend/internal/domain"
-	"github.com/auto-hh/backend/internal/model"
+	"github.com/auto-hh/backend/internal/middleware"
 	"github.com/auto-hh/backend/internal/service"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v5"
 )
 
@@ -23,7 +22,7 @@ func NewLLM(service service.ILLM) *LLM {
 func (llm *LLM) FindVacancies(ctx *echo.Context) error {
 	userID, err := middleware.GetUserID(ctx)
 	if err != nil {
-		return domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to get user ID from Cookie", err)
+		return domain.MapAppError(ctx, err)
 	}
 
 	vacancies, err := llm.service.FindVacancies(ctx.Request().Context(), userID)
@@ -32,4 +31,13 @@ func (llm *LLM) FindVacancies(ctx *echo.Context) error {
 	}
 
 	return domain.JSON(ctx, http.StatusOK, vacancies)
+}
+
+func (llm *LLM) Analysis(ctx *echo.Context) error {
+	userID, err := middleware.GetUserID(ctx)
+	if err != nil {
+		return domain.MapAppError(ctx, err)
+	}
+
+	err := llm.service.
 }
