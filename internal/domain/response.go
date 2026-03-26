@@ -18,6 +18,8 @@ func JSON(ctx *echo.Context, code int, data any) error {
 func MapAppError(ctx *echo.Context, err error) error {
 	mapAppErr := map[AppErrorType]int{
 		TypeBadRequest:          http.StatusBadRequest,
+		TypeUnauthorized:        http.StatusUnauthorized,
+		TypeForbidden:           http.StatusForbidden,
 		TypeInternalServerError: http.StatusInternalServerError,
 	}
 
