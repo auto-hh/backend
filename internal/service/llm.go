@@ -14,14 +14,13 @@ import (
 )
 
 type LLM struct {
-	repository   repository.IProfile
-	client       *http.Client
-	llmPath      string
-	frontendPath string
+	repository repository.IProfile
+	client     *http.Client
+	llmPath    string
 }
 
-func NewLLM(repository repository.IProfile, client *http.Client, llmPath, frontendPath string) *LLM {
-	return &LLM{repository, client, llmPath, frontendPath}
+func NewLLM(repository repository.IProfile, client *http.Client, llmPath string) *LLM {
+	return &LLM{repository, client, llmPath}
 }
 
 func (llm *LLM) FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Vacancy, error) {

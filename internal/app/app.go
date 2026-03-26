@@ -1,6 +1,8 @@
 package app
 
 import (
+	"net/http"
+
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/handler"
 	"github.com/auto-hh/backend/internal/middleware"
@@ -15,23 +17,26 @@ import (
 )
 
 type Handlers struct {
-	auth handler.Auth
+	auth *handler.Auth
+	llm  *handler.LLM
 }
 
 type Services struct {
 	auth service.IAuth
+	llm  service.ILLM
 }
 
 type Repositories struct {
 	txManager repository.TransactionManager
 	user      repository.IUser
+	profile   repository.IProfile
 }
 
-func InitServer(pool *pgxpool.Pool, secretKey []byte) (*echo.Echo, error) {
+func InitServer(pool *pgxpool.Pool, secretKey []byte, llmPath string) (*echo.Echo, error) {
 	server := echo.New()
 
 	repositories := InitRepositories(pool)
-	services := InitServices(repositories)
+	services := InitServices(repositories, llmPath)
 	handlers := InitHandlers(services)
 
 	AddHandlers(server, handlers, secretKey)
@@ -52,19 +57,22 @@ func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
 	groupAuth.GET("/begin", handlers.auth.Begin)
 	groupAuth.GET("/complete", handlers.auth.Complete)
 
-	groupLLM.POST("/search", ...)//TODO:Check paths
-	groupLLM.POST("/analyze", ...)
+	groupLLM.POST("/vacancies", handlers.llm.FindVacancies)
+	groupLLM.POST("/analysis", handlers.llm.Analysis)
 }
 
 func InitHandlers(services *Services) *Handlers {
 	return &Handlers{
-		auth: *handler.NewAuth(services.auth),
+		auth: handler.NewAuth(services.auth),
+		llm:  handler.NewLLM(services.llm),
 	}
 }
 
-func InitServices(repositories *Repositories) *Services {
+func InitServices(repositories *Repositories, llmPath string) *Services {
+	client := &http.Client{}
 	return &Services{
 		auth: service.NewAuth(repositories.user),
+		llm:  service.NewLLM(repositories.profile, client, llmPath),
 	}
 }
 
@@ -74,6 +82,7 @@ func InitRepositories(pool *pgxpool.Pool) *Repositories {
 	return &Repositories{
 		txManager: executor,
 		user:      repository.NewUser(executor),
+		profile:   repository.NewProfile(executor),
 	}
 }
 
