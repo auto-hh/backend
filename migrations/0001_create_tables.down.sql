@@ -1,0 +1,3 @@
+DROP TABLE profiles;
+DROP TABLE users;
+DROP TYPE JOB_GRADE;
