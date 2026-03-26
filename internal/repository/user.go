@@ -18,7 +18,7 @@ func NewUser(executor *Executor) *User {
 }
 
 func (u *User) IsUserExistsByHHID(ctx context.Context, hhID uuid.UUID) (bool, error) {
-	query := `SELECT EXISTS(SELECT TRUE FROM users WHERE hh_id = $1::UUID);`
+	query := `SELECT EXISTS(SELECT 1 FROM users WHERE hh_id = $1::UUID);`
 	var exists bool
 	executor := u.GetExecutor(ctx)
 	err := executor.QueryRow(ctx, query, hhID).Scan(&exists)
