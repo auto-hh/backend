@@ -44,6 +44,7 @@ func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
 
 	server.Use(echomw.Recover())
 	server.Use(echomw.RequestLogger())
+	//TODO: add CORS middleware
 
 	groupAuth := server.Group("/auth")
 	groupLLM := server.Group("/llm", echojwt.WithConfig(jwtConfig))
