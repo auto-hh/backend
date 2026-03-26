@@ -1,6 +1,7 @@
 package service
 
-type (
-	IAuth any
-	ILLM  any
-)
+type IAuth any
+
+type ILLM interface {
+	FindVacancies() error
+}

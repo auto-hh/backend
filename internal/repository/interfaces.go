@@ -30,4 +30,6 @@ type IUser interface {
 	IsUserExistsByHHID(ctx context.Context, hhID uuid.UUID) (bool, error)
 }
 
-type IProfile any
+type IProfile interface {
+	GetProfileData() (string, error)
+}
