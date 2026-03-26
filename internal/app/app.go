@@ -11,6 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 	echojwt "github.com/labstack/echo-jwt/v5"
 	"github.com/labstack/echo/v5"
+	echomw "github.com/labstack/echo/v5/middleware"
 )
 
 type Handlers struct {
@@ -40,9 +41,18 @@ func InitServer(pool *pgxpool.Pool, secretKey []byte) (*echo.Echo, error) {
 
 func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
 	jwtConfig := InitJWTConfig(secretKey)
-	groupAuth := server.Group("/auth", echojwt.WithConfig(jwtConfig))
+
+	server.Use(echomw.Recover())
+	server.Use(echomw.RequestLogger())
+
+	groupAuth := server.Group("/auth")
+	groupLLM := server.Group("/llm", echojwt.WithConfig(jwtConfig))
+
 	groupAuth.GET("/begin", handlers.auth.Begin)
 	groupAuth.GET("/complete", handlers.auth.Complete)
+
+	groupLLM.POST("/search", ...)
+	groupLLM.POST("/analyze", ...)
 }
 
 func InitHandlers(services *Services) *Handlers {
