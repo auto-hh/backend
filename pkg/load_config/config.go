@@ -9,7 +9,7 @@ import (
 
 type ConfigKey string
 
-func (key ConfigKey) MustGet() string { //используем для проверки наличия системной переменной
+func (key ConfigKey) MustGet() string {
 	val := os.Getenv(string(key))
 	if val == "" {
 		panic(fmt.Sprintf("config.MustGet: %s required variable is not set", key))
@@ -18,14 +18,15 @@ func (key ConfigKey) MustGet() string { //используем для прове
 	return val
 }
 
-func (key ConfigKey) Get(defaultVal string) string { //само получение переменной
+func (key ConfigKey) Get(defaultVal string) string {
 	if val := os.Getenv(string(key)); val != "" {
 		return val
 	}
+
 	return defaultVal
 }
 
-func LoadDotEnv(path string) error { //загрузка виртуального окружения из .env файла
+func LoadDotEnv(path string) error {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -35,7 +36,7 @@ func LoadDotEnv(path string) error { //загрузка виртуального
 		return fmt.Errorf("config.LoadDotEnv: %w", err)
 	}
 
-	for _, line := range strings.Split(string(data), "\n") {
+	for line := range strings.SplitSeq(string(data), "\n") {
 		line = strings.TrimSpace(line)
 
 		if line == "" || strings.HasPrefix(line, "#") {
@@ -50,10 +51,12 @@ func LoadDotEnv(path string) error { //загрузка виртуального
 
 		key = strings.TrimSpace(key)
 		if os.Getenv(key) == "" {
-			if err := os.Setenv(key, value); err != nil {
+			err := os.Setenv(key, value)
+			if err != nil {
 				return fmt.Errorf("config.LoadDotEnv: %w", err)
 			}
 		}
 	}
+
 	return nil
 }

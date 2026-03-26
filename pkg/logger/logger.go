@@ -11,7 +11,7 @@ const (
 	EnvProd  = "prod"
 )
 
-func Setup(env string) { //настраиваем хендлер в зависимости от среды
+func InitLogger(env string) {
 	var handler slog.Handler
 
 	switch env {
@@ -30,8 +30,4 @@ func Setup(env string) { //настраиваем хендлер в зависи
 	}
 
 	slog.SetDefault(slog.New(handler))
-}
-
-func With(args ...any) *slog.Logger {
-	return slog.With(args...)
 }
