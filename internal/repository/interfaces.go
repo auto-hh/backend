@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 
+	"github.com/auto-hh/backend/internal/model"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -31,5 +32,5 @@ type IUser interface {
 }
 
 type IProfile interface {
-	GetProfileData() (string, error)
+	GetProfileData(ctx context.Context, userID uuid.UUID) (model.Profile, error)
 }
