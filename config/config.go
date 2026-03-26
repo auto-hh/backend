@@ -1,17 +1,18 @@
 package config
 
 import (
+	"fmt"
 	"log/slog"
 	"strconv"
 	"time"
 )
 
 type Config struct {
-	logLevel          slog.Level
-	port              int
-	secretKey         []byte
+	logLevel              slog.Level
+	port                  int
+	secretKey             []byte
 	jwtExpirationDuration time.Duration
-	postgresConfig    *PostgresConfig
+	postgresConfig        *PostgresConfig
 }
 
 func LoadConfig() (*Config, error) {
@@ -37,11 +38,11 @@ func LoadConfig() (*Config, error) {
 	postgresConfig := LoadPostgresConfig()
 
 	config := &Config{
-		logLevel:          logLevel,
-		port:              port,
-		secretKey:         secretKey,
+		logLevel:              logLevel,
+		port:                  port,
+		secretKey:             secretKey,
 		jwtExpirationDuration: time.Duration(jwtExpirationDuration) * time.Hour,
-		postgresConfig:    postgresConfig,
+		postgresConfig:        postgresConfig,
 	}
 
 	return config, nil
@@ -51,11 +52,7 @@ func (c *Config) LogLevel() slog.Level {
 	return c.logLevel
 }
 
-func (c *Config) Port() int {
-	return c.port
-}
-
-func (c *Config) GetSecretKey() []byte {
+func (c *Config) SecretKey() []byte {
 	return c.secretKey
 }
 
@@ -65,4 +62,8 @@ func (c *Config) JWTExpirationDuration() time.Duration {
 
 func (c *Config) PostgresDSN() string {
 	return c.postgresConfig.DSN()
+}
+
+func (c *Config) Address() string {
+	return fmt.Sprintf(":%d", c.port)
 }

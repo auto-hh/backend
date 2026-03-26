@@ -8,12 +8,16 @@ import (
 	"github.com/labstack/echo/v5"
 )
 
-const tokenKey string = "user"
+const KeyToken string = "user"
 
 func GetJWTData(ctx *echo.Context) (*model.JWTData, error) {
-	token, err := echo.ContextGet[*jwt.Token](ctx, tokenKey)
+	token, err := echo.ContextGet[*jwt.Token](ctx, KeyToken)
 	if err != nil {
-		return nil, domain.NewUnauthorized(domain.CodeUnauthorized, "token key not found in context", err)
+		return nil, domain.NewUnauthorized(
+			domain.CodeUnauthorized,
+			"token key not found in context",
+			err,
+		)
 	}
 
 	jwtData, ok := token.Claims.(*model.JWTData)
