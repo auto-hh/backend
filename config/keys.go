@@ -3,6 +3,7 @@ package config
 import "github.com/auto-hh/backend/pkg/config"
 
 const (
+	keyLLMPath               config.Key = "LLM_PATH"
 	keyPort                  config.Key = "PORT"
 	keyLogLevel              config.Key = "LOG_LEVEL"
 	keySecretKey             config.Key = "SECRET_KEY"

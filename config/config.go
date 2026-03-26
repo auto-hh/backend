@@ -13,6 +13,7 @@ type Config struct {
 	secretKey             []byte
 	jwtExpirationDuration time.Duration
 	postgresConfig        *PostgresConfig
+	llmPath               string
 }
 
 func LoadConfig() (*Config, error) {
@@ -35,6 +36,8 @@ func LoadConfig() (*Config, error) {
 		return nil, err
 	}
 
+	llmPath := keyLLMPath.GetValue()
+
 	postgresConfig := LoadPostgresConfig()
 
 	config := &Config{
@@ -43,6 +46,7 @@ func LoadConfig() (*Config, error) {
 		secretKey:             secretKey,
 		jwtExpirationDuration: time.Duration(jwtExpirationDuration) * time.Hour,
 		postgresConfig:        postgresConfig,
+		llmPath:               llmPath,
 	}
 
 	return config, nil
@@ -66,4 +70,8 @@ func (c *Config) PostgresDSN() string {
 
 func (c *Config) Address() string {
 	return fmt.Sprintf(":%d", c.port)
+}
+
+func (c *Config) LLMPath() string {
+	return c.llmPath
 }
