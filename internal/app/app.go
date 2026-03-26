@@ -52,7 +52,7 @@ func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
 	groupAuth.GET("/begin", handlers.auth.Begin)
 	groupAuth.GET("/complete", handlers.auth.Complete)
 
-	groupLLM.POST("/search", ...)
+	groupLLM.POST("/search", ...)//TODO:Check paths
 	groupLLM.POST("/analyze", ...)
 }
 

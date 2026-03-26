@@ -39,5 +39,10 @@ func (llm *LLM) Analysis(ctx *echo.Context) error {
 		return domain.MapAppError(ctx, err)
 	}
 
-	err := llm.service.
+	scores, err := llm.service.Analysis(ctx.Request().Context(), userID)
+	if err != nil {
+		return domain.MapAppError(ctx, err)
+	}
+
+	return domain.JSON(ctx, http.StatusOK, scores)
 }

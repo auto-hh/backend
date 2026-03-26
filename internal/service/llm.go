@@ -51,22 +51,29 @@ func (llm *LLM) FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Va
 	return respData, nil
 }
 
-func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) error {
+func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribute, error) {
 	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/analysis")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := llm.client.Do(requestLLM)
 	if err != nil {
-		return domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to send requestLLM", err)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to send requestLLM", err)
 	}
 
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to receive response", err)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to receive response", err)
 	}
 
+	var respData []model.Attribute
+	err = json.NewDecoder(response.Body).Decode(&respData)
+	if err != nil {
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to read response body", err)
+	}
+
+	return respData, nil
 }
 
 func (llm *LLM) makeLLMRequest(ctx context.Context, userID uuid.UUID, method, customUrl string) (*http.Request, error) {
