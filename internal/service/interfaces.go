@@ -1,4 +1,6 @@
 package service
 
-type IAuth any
-type ILLM any
+type (
+	IAuth any
+	ILLM  any
+)
