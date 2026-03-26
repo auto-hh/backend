@@ -19,11 +19,19 @@ func NewUser(executor *Executor) *User {
 
 func (u *User) IsUserExistsByHHID(ctx context.Context, hhID uuid.UUID) (bool, error) {
 	query := `SELECT EXISTS(SELECT 1 FROM users WHERE hh_id = $1::UUID);`
+
 	var exists bool
+
 	executor := u.GetExecutor(ctx)
+
 	err := executor.QueryRow(ctx, query, hhID).Scan(&exists)
 	if err != nil {
-		return false, domain.NewInternalServerError(domain.CodeInternalServerError, "database error", err)
+		return false, domain.NewInternalServerError(
+			domain.CodeInternalServerError,
+			"database error",
+			err,
+		)
 	}
+
 	return exists, nil
 }

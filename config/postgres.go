@@ -16,7 +16,7 @@ type PostgresConfig struct {
 func LoadPostgresConfig() *PostgresConfig {
 	user := KeyPostgresUser.GetValueDefault("user")
 	password := KeyPostgresPassword.GetValueDefault("password")
-	host := KeyPostgresHost.GetValueDefault("database")
+	host := KeyPostgresHost.GetValueDefault("postgres")
 
 	port := KeyPostgresPort.GetValueDefault("5432")
 

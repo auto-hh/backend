@@ -19,8 +19,8 @@ const (
 
 const (
 	CodeBadRequest          AppErrorCode = "BAD_REQUEST"
-	CodeUnauthorized AppErrorCode = "ANAUTHORIZED"
-	CodeForbidden AppErrorCode = "FORBIDDEN"
+	CodeUnauthorized        AppErrorCode = "ANAUTHORIZED"
+	CodeForbidden           AppErrorCode = "FORBIDDEN"
 	CodeInternalServerError AppErrorCode = "INTERNAL_SERVER_ERROR"
 )
 
