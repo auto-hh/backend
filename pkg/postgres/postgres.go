@@ -8,12 +8,7 @@ import (
 )
 
 func NewPool(ctx context.Context, dsn string) (*pgxpool.Pool, error) {
-	cfg, err := pgxpool.ParseConfig(dsn)
-	if err != nil {
-		return nil, fmt.Errorf("pgxpool.ParseConfig: %w", err)
-	}
-
-	pool, err := pgxpool.NewWithConfig(ctx, cfg)
+	pool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
 		return nil, fmt.Errorf("pgxpool.NewWithConfig: %w", err)
 	}
