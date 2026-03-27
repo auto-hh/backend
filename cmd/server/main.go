@@ -6,8 +6,11 @@ import (
 	"github.com/auto-hh/backend/config"
 	"github.com/auto-hh/backend/internal/app"
 	"github.com/auto-hh/backend/pkg/postgres"
+	_ "github.com/auto-hh/backend/docs"
 )
 
+// @title Auto HH
+// @version 0.1.0
 func main() {
 	config, err := config.LoadConfig()
 	if err != nil {

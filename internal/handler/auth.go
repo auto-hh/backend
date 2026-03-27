@@ -26,6 +26,9 @@ func NewAuth(serviceAuth service.IAuth, stateExpirationDuration, jwtExpirationDu
 	}
 }
 
+// @Tags         auth
+// @Success      200
+// @Router       /auth/begin [get]
 func (a *Auth) Begin(ctx *echo.Context) error {
 	stateJWTToken, redirectURL, err := a.serviceAuth.Begin()
 	if err != nil {
@@ -47,6 +50,9 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 	return ctx.Redirect(http.StatusFound, redirectURL.String())
 }
 
+// @Tags         auth
+// @Success      200
+// @Router       /auth/complete [get]
 func (a *Auth) Complete(ctx *echo.Context) error {
 	stateCookie, err := ctx.Cookie(domain.CookieState)
 	if err != nil {

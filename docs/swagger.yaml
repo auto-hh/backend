@@ -1,0 +1,27 @@
+info:
+  contact: {}
+  title: Auto HH
+  version: 0.1.0
+paths:
+  /auth/begin:
+    get:
+      responses:
+        "200":
+          description: OK
+      tags:
+      - auth
+  /auth/complete:
+    get:
+      responses:
+        "200":
+          description: OK
+      tags:
+      - auth
+  /health:
+    get:
+      responses:
+        "200":
+          description: OK
+      tags:
+      - health
+swagger: "2.0"
