@@ -46,7 +46,7 @@ func AddHandlers(config *config.Config, server *echo.Echo, handlers *Handlers) {
 	groupUser.GET("/me", handlers.user.Me)
 	groupUser.GET("/has-profile", handlers.user.HasProfile)
 	groupUser.GET("/profile", handlers.user.Profile)
-	// groupUser.POST("/profile", handlers.user.UpdateProfile)
+	groupUser.POST("/profile", handlers.user.UpdateProfile)
 
 	groupLLM.POST("/vacancies", handlers.llm.FindVacancies)
 	groupLLM.POST("/analysis", handlers.llm.Analysis)
@@ -57,10 +57,11 @@ func InitJWTConfig(secretKey []byte) echojwt.Config {
 	//nolint:gosec
 	return echojwt.Config{
 		ErrorHandler: func(ctx *echo.Context, err error) error {
-			return domain.MapAppError(
+			err = domain.MapAppError(
 				ctx,
 				domain.NewUnauthorized(domain.CodeUnauthorized, "jwt middleware error", err),
 			)
+			return domain.MapAppError(ctx, err)
 		},
 		SigningKey:  secretKey,
 		ContextKey:  middleware.KeyToken,
