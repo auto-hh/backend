@@ -11,6 +11,9 @@ import (
 
 // @title Auto HH
 // @version 0.1.0
+// @securityDefinitions.apikey BearerAuth
+// @in cookie
+// @name auto-hh-access-key
 func main() {
 	config, err := config.LoadConfig()
 	if err != nil {

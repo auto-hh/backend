@@ -19,10 +19,24 @@ func NewUser(service service.IUser) *User {
 	}
 }
 
+// @Tags         user
+// @Success      204
+// @Failure      401 {object} domain.ErrorWrapper
+// @Failure      403 {object} domain.ErrorWrapper
+// @Security      BearerAuth
+// @Router       /user/me [get]
 func (u *User) Me(ctx *echo.Context) error {
 	return ctx.NoContent(http.StatusNoContent)
 }
 
+// @Tags         user
+// @Success      204
+// @Failure      401 {object} domain.ErrorWrapper
+// @Failure      403 {object} domain.ErrorWrapper
+// @Failure      404 {object} domain.ErrorWrapper
+// @Failure      500 {object} domain.ErrorWrapper
+// @Security      BearerAuth
+// @Router       /user/has-profile [get]
 func (u *User) HasProfile(ctx *echo.Context) error {
 
 	userID, err := middleware.GetUserID(ctx)
@@ -42,6 +56,14 @@ func (u *User) HasProfile(ctx *echo.Context) error {
 	return ctx.NoContent(http.StatusNoContent)
 }
 
+// @Tags         user
+// @Success      200 {object} model.Profile
+// @Failure      401 {object} domain.ErrorWrapper
+// @Failure      403 {object} domain.ErrorWrapper
+// @Failure      404 {object} domain.ErrorWrapper
+// @Failure      500 {object} domain.ErrorWrapper
+// @Security      BearerAuth
+// @Router       /user/profile [get]
 func (u *User) Profile(ctx *echo.Context) error {
 
 	userID, err := middleware.GetUserID(ctx)

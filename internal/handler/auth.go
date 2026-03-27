@@ -27,7 +27,8 @@ func NewAuth(serviceAuth service.IAuth, stateExpirationDuration, jwtExpirationDu
 }
 
 // @Tags         auth
-// @Success      200
+// @Success      302
+// @Failure      500 {object} domain.ErrorWrapper
 // @Router       /auth/begin [get]
 func (a *Auth) Begin(ctx *echo.Context) error {
 	stateJWTToken, redirectURL, err := a.serviceAuth.Begin()
@@ -51,7 +52,9 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 }
 
 // @Tags         auth
-// @Success      200
+// @Success      302
+// @Failure      400 {object} domain.ErrorWrapper
+// @Failure      500 {object} domain.ErrorWrapper
 // @Router       /auth/complete [get]
 func (a *Auth) Complete(ctx *echo.Context) error {
 	stateCookie, err := ctx.Cookie(domain.CookieState)
