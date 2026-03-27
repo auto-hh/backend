@@ -2,12 +2,12 @@ package repository
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/model"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 )
 
 type Profile struct {
@@ -37,7 +37,7 @@ func (p *Profile) GetProfileData(ctx context.Context, userID uuid.UUID) (model.P
 		&data.RecentJobs,
 	)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return model.Profile{}, nil
 		}
 
