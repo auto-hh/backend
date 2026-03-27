@@ -5,7 +5,6 @@ import (
 
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/middleware"
-	"github.com/auto-hh/backend/internal/model"
 	"github.com/auto-hh/backend/internal/service"
 	"github.com/labstack/echo/v5"
 )
@@ -88,23 +87,23 @@ func (u *User) Profile(ctx *echo.Context) error {
 // @Failure      500 {object} domain.ErrorWrapper
 // @Security      BearerAuth
 // @Router       /user/profile [post]
-func (u *User) UpdateProfile(ctx *echo.Context) error {
-	userID, err := middleware.GetUserID(ctx)
-	if err != nil {
-		return domain.MapAppError(ctx, err)
-	}
+// func (u *User) UpdateProfile(ctx *echo.Context) error {
+// 	userID, err := middleware.GetUserID(ctx)
+// 	if err != nil {
+// 		return domain.MapAppError(ctx, err)
+// 	}
 
-	var profile model.Profile
-	err = ctx.Bind(&profile)
-	if err != nil {
-		err = domain.NewBadRequest(domain.CodeBadRequest, "can not parse update profile data", err)
-		return domain.MapAppError(ctx, err)
-	}
+// 	var profile model.Profile
+// 	err = ctx.Bind(&profile)
+// 	if err != nil {
+// 		err = domain.NewBadRequest(domain.CodeBadRequest, "can not parse update profile data", err)
+// 		return domain.MapAppError(ctx, err)
+// 	}
 
-	err = u.service.UpdateUserInfo(ctx.Request().Context(), userID)
-	if err != nil {
-		return domain.MapAppError(ctx, err)
-	}
+// 	err = u.service.UpdateUserInfo(ctx.Request().Context(), userID)
+// 	if err != nil {
+// 		return domain.MapAppError(ctx, err)
+// 	}
 
-	return ctx.NoContent(http.StatusOK)
-}
+// 	return ctx.NoContent(http.StatusOK)
+// }
