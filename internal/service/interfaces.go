@@ -10,7 +10,11 @@ import (
 
 type IAuth interface {
 	Begin() (string, *url.URL, error)
-	Complete(ctx context.Context, stateJWTToken string, complete model.Complete) (authJWTToken string, err error)
+	Complete(
+		ctx context.Context,
+		stateJWTToken string,
+		complete model.Complete,
+	) (authJWTToken string, err error)
 }
 
 type ILLM interface {

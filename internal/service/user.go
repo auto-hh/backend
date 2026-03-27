@@ -22,12 +22,7 @@ func NewUser(repository repository.IProfile, client *http.Client) *User {
 }
 
 func (u *User) GetUserInfo(ctx context.Context, userID uuid.UUID) (model.Profile, error) {
-	rawUserInfo, err := u.repository.GetProfileData(ctx, userID)
-	if err != nil {
-		return model.Profile{}, err
-	}
-
-	return rawUserInfo, nil
+	return u.repository.GetProfileData(ctx, userID)
 }
 
 func (u *User) IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID) (bool, error) {

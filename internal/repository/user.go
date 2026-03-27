@@ -47,7 +47,9 @@ func (u *User) GetOrCreate(ctx context.Context, userData *model.UserData) (uuid.
 
 	var userID uuid.UUID
 
-	err := u.GetExecutor(ctx).QueryRow(ctx, query, userData.ID, userData.FirstName, userData.LastName).Scan(&userID)
+	err := u.GetExecutor(ctx).
+		QueryRow(ctx, query, userData.ID, userData.FirstName, userData.LastName).
+		Scan(&userID)
 	if err != nil {
 		return uuid.UUID{}, domain.NewInternalServerError(
 			domain.CodeInternalServerError,

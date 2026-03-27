@@ -1,8 +1,6 @@
 package app
 
 import (
-	"fmt"
-
 	"github.com/auto-hh/backend/config"
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/middleware"
@@ -54,18 +52,18 @@ func AddHandlers(config *config.Config, server *echo.Echo, handlers *Handlers) {
 }
 
 func InitJWTConfig(secretKey []byte) echojwt.Config {
-	//nolint:gosec
 	return echojwt.Config{
 		ErrorHandler: func(ctx *echo.Context, err error) error {
 			err = domain.MapAppError(
 				ctx,
 				domain.NewUnauthorized(domain.CodeUnauthorized, "jwt middleware error", err),
 			)
+
 			return domain.MapAppError(ctx, err)
 		},
 		SigningKey:  secretKey,
 		ContextKey:  middleware.KeyToken,
-		TokenLookup: fmt.Sprintf("cookie:%s", domain.CookieAuthJWT),
+		TokenLookup: "cookie:" + domain.CookieAuthJWT,
 		NewClaimsFunc: func(_ *echo.Context) jwt.Claims {
 			return new(model.JWTAuthData)
 		},

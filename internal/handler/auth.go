@@ -11,25 +11,31 @@ import (
 )
 
 type Auth struct {
-	serviceAuth service.IAuth
+	serviceAuth             service.IAuth
 	stateExpirationDuration time.Duration
-	jwtExpirationDuration time.Duration
-	siteURL string
+	jwtExpirationDuration   time.Duration
+	siteURL                 string
 }
 
-func NewAuth(serviceAuth service.IAuth, stateExpirationDuration, jwtExpirationDuration time.Duration, siteURL string) *Auth {
+func NewAuth(
+	serviceAuth service.IAuth,
+	stateExpirationDuration, jwtExpirationDuration time.Duration,
+	siteURL string,
+) *Auth {
 	return &Auth{
-		serviceAuth: serviceAuth,
+		serviceAuth:             serviceAuth,
 		stateExpirationDuration: stateExpirationDuration,
-		jwtExpirationDuration: jwtExpirationDuration,
-		siteURL: siteURL,
+		jwtExpirationDuration:   jwtExpirationDuration,
+		siteURL:                 siteURL,
 	}
 }
 
-// @Tags         auth
-// @Success      302
-// @Failure      500 {object} domain.ErrorWrapper
-// @Router       /auth/begin [get]
+// Begingit
+//
+//	@Tags		auth
+//	@Success	302
+//	@Failure	500	{object}	domain.ErrorWrapper
+//	@Router		/auth/begin [get].
 func (a *Auth) Begin(ctx *echo.Context) error {
 	stateJWTToken, redirectURL, err := a.serviceAuth.Begin()
 	if err != nil {
@@ -37,12 +43,12 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 	}
 
 	stateCookie := &http.Cookie{
-		Name: domain.CookieState,
-		Value: stateJWTToken,
-		Path: "/auth/complete",
-		Expires: time.Now().Add(a.stateExpirationDuration),
-		MaxAge: int(a.stateExpirationDuration.Seconds()),
-		Secure: false,
+		Name:     domain.CookieState,
+		Value:    stateJWTToken,
+		Path:     "/auth/complete",
+		Expires:  time.Now().Add(a.stateExpirationDuration),
+		MaxAge:   int(a.stateExpirationDuration.Seconds()),
+		Secure:   false,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	}
@@ -51,38 +57,50 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 	return ctx.Redirect(http.StatusFound, redirectURL.String())
 }
 
-// @Tags         auth
-// @Success      302
-// @Failure      400 {object} domain.ErrorWrapper
-// @Failure      500 {object} domain.ErrorWrapper
-// @Router       /auth/complete [get]
+// Complete
+//
+//	@Tags		auth
+//	@Success	302
+//	@Failure	400	{object}	domain.ErrorWrapper
+//	@Failure	500	{object}	domain.ErrorWrapper
+//	@Router		/auth/complete [get].
 func (a *Auth) Complete(ctx *echo.Context) error {
 	stateCookie, err := ctx.Cookie(domain.CookieState)
 	if err != nil {
 		err = domain.NewBadRequest(domain.CodeBadRequest, "state cookie error", err)
+
 		return domain.MapAppError(ctx, err)
 	}
 
 	var complete model.Complete
+
 	err = ctx.Bind(&complete)
 	if err != nil {
 		err = domain.NewBadRequest(domain.CodeBadRequest, "query params are invalid", err)
+
 		return domain.MapAppError(ctx, err)
 	}
-	authJWTToken, err := a.serviceAuth.Complete(ctx.Request().Context(), stateCookie.Value, complete)
+
+	authJWTToken, err := a.serviceAuth.Complete(
+		ctx.Request().Context(),
+		stateCookie.Value,
+		complete,
+	)
 	if err != nil {
 		return domain.MapAppError(ctx, err)
 	}
+
 	authCookie := &http.Cookie{
-		Name: domain.CookieAuthJWT,
-		Value: authJWTToken,
-		Path: "/",
-		Expires: time.Now().Add(a.jwtExpirationDuration),
-		MaxAge: int(a.jwtExpirationDuration.Seconds()),
-		Secure: false,
+		Name:     domain.CookieAuthJWT,
+		Value:    authJWTToken,
+		Path:     "/",
+		Expires:  time.Now().Add(a.jwtExpirationDuration),
+		MaxAge:   int(a.jwtExpirationDuration.Seconds()),
+		Secure:   false,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	}
 	ctx.SetCookie(authCookie)
+
 	return ctx.Redirect(http.StatusFound, a.siteURL)
 }

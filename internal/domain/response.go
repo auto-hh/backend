@@ -33,9 +33,12 @@ func MapAppError(ctx *echo.Context, err error) error {
 		status, ok := mapAppErr[appError.errorType]
 		if ok {
 			ctx.Logger().Debug("known app error", slog.String("error", err.Error()))
+
 			return JSON(ctx, status, ErrorWrapper{Error: ErrorResponse{Code: appError.code}})
 		}
+
 		ctx.Logger().Error("unknown app error", slog.String("error", err.Error()))
+
 		return JSON(
 			ctx,
 			http.StatusInternalServerError,
@@ -44,6 +47,7 @@ func MapAppError(ctx *echo.Context, err error) error {
 	}
 
 	ctx.Logger().Error("unknown error", slog.String("error", err.Error()))
+
 	return JSON(
 		ctx,
 		http.StatusInternalServerError,

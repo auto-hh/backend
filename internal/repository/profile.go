@@ -21,12 +21,15 @@ func NewProfile(e *Executor) *Profile {
 }
 
 func (p *Profile) GetProfileData(ctx context.Context, userID uuid.UUID) (model.Profile, error) {
-	query := `SELECT experience, job_title, grade, work_format, salary, city, about_me, recent_jobs FROM profiles WHERE id = $1::UUID`
-	executor := p.GetExecutor(ctx)
+	query := `
+		SELECT experience, job_title, grade, work_format, salary, city, about_me, recent_jobs
+		FROM profiles
+		WHERE id = $1::UUID
+	`
 
 	var data model.Profile
 
-	err := executor.QueryRow(ctx, query, userID).Scan(
+	err := p.GetExecutor(ctx).QueryRow(ctx, query, userID).Scan(
 		&data.Experience,
 		&data.JobTitle,
 		&data.Grade,
@@ -56,18 +59,26 @@ func (p *Profile) IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID)
 	executor := p.GetExecutor(ctx)
 
 	var exists bool
+
 	err := executor.QueryRow(ctx, query, userID).Scan(
 		&exists,
 	)
-
 	if err != nil {
-		return false, domain.NewInternalServerError(domain.CodeInternalServerError, "failed to check if user exists", err)
+		return false, domain.NewInternalServerError(
+			domain.CodeInternalServerError,
+			"failed to check if user exists",
+			err,
+		)
 	}
 
 	return exists, nil
 }
 
-func (p *Profile) InsertOrUpdate(ctx context.Context, userID uuid.UUID, profile model.Profile) error {
+func (p *Profile) InsertOrUpdate(
+	ctx context.Context,
+	userID uuid.UUID,
+	profile model.Profile,
+) error {
 	query := `
 		INSERT INTO profiles (user_id, experience, job_title, grade, work_format, salary, city, about_me, recent_jobs)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -83,10 +94,25 @@ func (p *Profile) InsertOrUpdate(ctx context.Context, userID uuid.UUID, profile 
             recent_jobs = EXCLUDED.recent_jobs;
 	`
 
-	_, err := p.GetExecutor(ctx).Exec(ctx, query, userID, profile.Experience, profile.JobTitle, profile.Grade, profile.WorkFormat, profile.Salary, profile.City, profile.AboutMe, profile.RecentJobs)
-
+	_, err := p.GetExecutor(ctx).Exec(
+		ctx,
+		query,
+		userID,
+		profile.Experience,
+		profile.JobTitle,
+		profile.Grade,
+		profile.WorkFormat,
+		profile.Salary,
+		profile.City,
+		profile.AboutMe,
+		profile.RecentJobs,
+	)
 	if err != nil {
-		return domain.NewInternalServerError(domain.CodeInternalServerError, "failed to insert or update user profile", err)
+		return domain.NewInternalServerError(
+			domain.CodeInternalServerError,
+			"failed to insert or update user profile",
+			err,
+		)
 	}
 
 	return nil

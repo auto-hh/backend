@@ -106,12 +106,17 @@ func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID) (string, e
 	if err != nil {
 		return "", err
 	}
-	response, err := llm.client.Do(requestLLM)
 
+	response, err := llm.client.Do(requestLLM)
 	if err != nil {
-		return "", domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to send requestLLM", err)
+		return "", domain.NewInternalServerError(
+			domain.CodeInternalServerError,
+			"Failed to send requestLLM",
+			err,
+		)
 	}
 	defer response.Body.Close()
+
 	if response.StatusCode != http.StatusOK {
 		return "", domain.NewInternalServerError(
 			domain.CodeInternalServerError,
@@ -121,9 +126,14 @@ func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID) (string, e
 	}
 
 	var coverLetter string
+
 	err = json.NewDecoder(response.Body).Decode(&coverLetter)
 	if err != nil {
-		return "", domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to convert cover Letter to string", err)
+		return "", domain.NewInternalServerError(
+			domain.CodeInternalServerError,
+			"Failed to convert cover Letter to string",
+			err,
+		)
 	}
 
 	return coverLetter, nil
@@ -132,7 +142,7 @@ func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID) (string, e
 func (llm *LLM) makeLLMRequest(
 	ctx context.Context,
 	userID uuid.UUID,
-	method, customUrl string,
+	method, customURL string,
 ) (*http.Request, error) {
 	rawUserInfo, err := llm.repository.GetProfileData(ctx, userID)
 	if err != nil {
@@ -148,7 +158,7 @@ func (llm *LLM) makeLLMRequest(
 		)
 	}
 
-	requestLLM, err := http.NewRequestWithContext(ctx, method, customUrl, bytes.NewReader(userInfo))
+	requestLLM, err := http.NewRequestWithContext(ctx, method, customURL, bytes.NewReader(userInfo))
 	if err != nil {
 		return nil, domain.NewInternalServerError(
 			domain.CodeInternalServerError,

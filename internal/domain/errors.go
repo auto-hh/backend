@@ -20,7 +20,7 @@ const (
 
 const (
 	CodeBadRequest          AppErrorCode = "BAD_REQUEST"
-	CodeNotFound          AppErrorCode = "NOT_FOUND"
+	CodeNotFound            AppErrorCode = "NOT_FOUND"
 	CodeUnauthorized        AppErrorCode = "UNAUTHORIZED"
 	CodeForbidden           AppErrorCode = "FORBIDDEN"
 	CodeInternalServerError AppErrorCode = "INTERNAL_SERVER_ERROR"

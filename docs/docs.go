@@ -469,7 +469,7 @@ const docTemplate = `{
     "securityDefinitions": {
         "BearerAuth": {
             "type": "apiKey",
-            "name": "auto-hh-access-key",
+            "name": "auto-hh-access-key.",
             "in": "cookie"
         }
     }
