@@ -8,8 +8,6 @@ import (
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/model"
 	"github.com/google/uuid"
-	"github.com/jackc/pgerrcode"
-	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type Profile struct {
