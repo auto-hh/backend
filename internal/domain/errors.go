@@ -12,6 +12,7 @@ type (
 
 const (
 	TypeBadRequest AppErrorType = iota
+	TypeNotFound
 	TypeUnauthorized
 	TypeForbidden
 	TypeInternalServerError
@@ -19,6 +20,7 @@ const (
 
 const (
 	CodeBadRequest          AppErrorCode = "BAD_REQUEST"
+	CodeNotFound          AppErrorCode = "NOT_FOUND"
 	CodeUnauthorized        AppErrorCode = "ANAUTHORIZED"
 	CodeForbidden           AppErrorCode = "FORBIDDEN"
 	CodeInternalServerError AppErrorCode = "INTERNAL_SERVER_ERROR"
@@ -47,6 +49,10 @@ func NewAppError(
 
 func NewBadRequest(code AppErrorCode, message string, errs ...error) AppError {
 	return NewAppError(TypeBadRequest, code, message, errs...)
+}
+
+func NewNotFound(code AppErrorCode, message string, errs ...error) AppError {
+	return NewAppError(TypeNotFound, code, message, errs...)
 }
 
 func NewUnauthorized(code AppErrorCode, message string, errs ...error) AppError {

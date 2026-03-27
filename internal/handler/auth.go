@@ -26,6 +26,10 @@ func NewAuth(serviceAuth service.IAuth, stateExpirationDuration, jwtExpirationDu
 	}
 }
 
+// @Tags         auth
+// @Success      302
+// @Failure      500 {object} domain.ErrorWrapper
+// @Router       /auth/begin [get]
 func (a *Auth) Begin(ctx *echo.Context) error {
 	stateJWTToken, redirectURL, err := a.serviceAuth.Begin()
 	if err != nil {
@@ -38,7 +42,7 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 		Path: "/auth/complete",
 		Expires: time.Now().Add(a.stateExpirationDuration),
 		MaxAge: int(a.stateExpirationDuration.Seconds()),
-		Secure: true,
+		Secure: false,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	}
@@ -47,6 +51,11 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 	return ctx.Redirect(http.StatusFound, redirectURL.String())
 }
 
+// @Tags         auth
+// @Success      302
+// @Failure      400 {object} domain.ErrorWrapper
+// @Failure      500 {object} domain.ErrorWrapper
+// @Router       /auth/complete [get]
 func (a *Auth) Complete(ctx *echo.Context) error {
 	stateCookie, err := ctx.Cookie(domain.CookieState)
 	if err != nil {
@@ -70,7 +79,7 @@ func (a *Auth) Complete(ctx *echo.Context) error {
 		Path: "/",
 		Expires: time.Now().Add(a.jwtExpirationDuration),
 		MaxAge: int(a.jwtExpirationDuration.Seconds()),
-		Secure: true,
+		Secure: false,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	}
