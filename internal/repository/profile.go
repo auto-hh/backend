@@ -71,3 +71,28 @@ func (p *Profile) IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID)
 
 	return exists, nil
 }
+
+func (p *Profile) InsertOrUpdate(ctx context.Context, userID uuid.UUID, profile model.Profile) error {
+	query := `
+		INSERT INTO profiles (user_id, experience, job_title, grade, work_format, salary, city, about_me, recent_jobs)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        ON CONFLICT (user_id)
+        DO UPDATE SET
+            experience = EXCLUDED.experience,
+            job_title = EXCLUDED.job_title,
+            grade = EXCLUDED.grade,
+            work_format = EXCLUDED.work_format,
+            salary = EXCLUDED.salary,
+    		city = EXCLUDED.city,
+            about_me = EXCLUDED.about_me,
+            recent_jobs = EXCLUDED.recent_jobs;
+	`
+
+	_, err := p.GetExecutor(ctx).Exec(ctx, query, userID, profile.Experience, profile.JobTitle, profile.Grade, profile.WorkFormat, profile.Salary, profile.City, profile.AboutMe, profile.RecentJobs)
+
+	if err != nil {
+		return domain.NewInternalServerError(domain.CodeInternalServerError, "failed to insert or update user profile", err)
+	}
+
+	return nil
+}
