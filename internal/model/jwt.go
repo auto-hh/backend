@@ -5,8 +5,14 @@ import (
 	"github.com/google/uuid"
 )
 
-type JWTData struct {
+type JWTAuthData struct {
 	jwt.RegisteredClaims
 
 	UserID uuid.UUID `json:"userId"`
+}
+
+type JWTStateData struct {
+	jwt.RegisteredClaims
+
+	State string `json:"state"`
 }

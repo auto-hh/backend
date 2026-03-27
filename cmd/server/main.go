@@ -22,7 +22,7 @@ func main() {
 		panic(err)
 	}
 
-	server, err := app.InitServer(pool, config.SecretKey(), config.LLMPath())
+	server, err := app.InitServer(config, pool)
 	if err != nil {
 		panic(err)
 	}

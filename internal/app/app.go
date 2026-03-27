@@ -1,14 +1,13 @@
 package app
 
 import (
-	"net/http"
+	"fmt"
 
+	"github.com/auto-hh/backend/config"
 	"github.com/auto-hh/backend/internal/domain"
-	"github.com/auto-hh/backend/internal/handler"
 	"github.com/auto-hh/backend/internal/middleware"
 	"github.com/auto-hh/backend/internal/model"
-	"github.com/auto-hh/backend/internal/repository"
-	"github.com/auto-hh/backend/internal/service"
+	"github.com/auto-hh/backend/pkg/logger"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	echojwt "github.com/labstack/echo-jwt/v5"
@@ -16,74 +15,41 @@ import (
 	echomw "github.com/labstack/echo/v5/middleware"
 )
 
-type Handlers struct {
-	auth *handler.Auth
-	llm  *handler.LLM
-}
-
-type Services struct {
-	auth service.IAuth
-	llm  service.ILLM
-}
-
-type Repositories struct {
-	txManager repository.TransactionManager
-	user      repository.IUser
-	profile   repository.IProfile
-}
-
-func InitServer(pool *pgxpool.Pool, secretKey []byte, llmPath string) (*echo.Echo, error) {
+func InitServer(config *config.Config, pool *pgxpool.Pool) (*echo.Echo, error) {
 	server := echo.New()
+	server.Logger = logger.InitLogger(config.LogLevel)
 
 	repositories := InitRepositories(pool)
-	services := InitServices(repositories, llmPath)
-	handlers := InitHandlers(services)
+	services := InitServices(config, repositories)
+	handlers := InitHandlers(config, services)
 
-	AddHandlers(server, handlers, secretKey)
+	AddHandlers(config, server, handlers)
 
 	return server, nil
 }
 
-func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
-	jwtConfig := InitJWTConfig(secretKey)
+func AddHandlers(config *config.Config, server *echo.Echo, handlers *Handlers) {
+	jwtConfig := InitJWTConfig(config.SecretKey)
 
 	server.Use(echomw.Recover())
 	server.Use(echomw.RequestLogger())
-	//TODO: add CORS middleware
+
+	server.GET("/health", handlers.health.Health)
 
 	groupAuth := server.Group("/auth")
+	groupUser := server.Group("/user", echojwt.WithConfig(jwtConfig))
 	groupLLM := server.Group("/llm", echojwt.WithConfig(jwtConfig))
 
 	groupAuth.GET("/begin", handlers.auth.Begin)
 	groupAuth.GET("/complete", handlers.auth.Complete)
 
+	groupUser.GET("/me", handlers.user.Me)
+	groupUser.GET("/has-profile", handlers.user.HasProfile)
+	groupUser.GET("/profile", handlers.user.Profile)
+
 	groupLLM.POST("/vacancies", handlers.llm.FindVacancies)
 	groupLLM.POST("/analysis", handlers.llm.Analysis)
-}
-
-func InitHandlers(services *Services) *Handlers {
-	return &Handlers{
-		auth: handler.NewAuth(services.auth),
-		llm:  handler.NewLLM(services.llm),
-	}
-}
-
-func InitServices(repositories *Repositories, llmPath string) *Services {
-	client := &http.Client{}
-	return &Services{
-		auth: service.NewAuth(repositories.user),
-		llm:  service.NewLLM(repositories.profile, client, llmPath),
-	}
-}
-
-func InitRepositories(pool *pgxpool.Pool) *Repositories {
-	executor := repository.NewExecutor(pool)
-
-	return &Repositories{
-		txManager: executor,
-		user:      repository.NewUser(executor),
-		profile:   repository.NewProfile(executor),
-	}
+	groupLLM.POST("/generate", handlers.llm.Analysis)
 }
 
 func InitJWTConfig(secretKey []byte) echojwt.Config {
@@ -92,14 +58,14 @@ func InitJWTConfig(secretKey []byte) echojwt.Config {
 		ErrorHandler: func(ctx *echo.Context, err error) error {
 			return domain.MapAppError(
 				ctx,
-				domain.NewUnauthorized(domain.CodeUnauthorized, "handled jwt error", err),
+				domain.NewUnauthorized(domain.CodeUnauthorized, "jwt middleware error", err),
 			)
 		},
 		SigningKey:  secretKey,
 		ContextKey:  middleware.KeyToken,
-		TokenLookup: "cookie:auto-hh-access-token",
+		TokenLookup: fmt.Sprintf("cookie:%s", domain.CookieAuthJWT),
 		NewClaimsFunc: func(_ *echo.Context) jwt.Claims {
-			return new(model.JWTData)
+			return new(model.JWTAuthData)
 		},
 	}
 }

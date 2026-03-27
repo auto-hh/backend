@@ -29,8 +29,10 @@ type TransactionManager interface {
 
 type IUser interface {
 	IsUserExistsByHHID(ctx context.Context, hhID uuid.UUID) (bool, error)
+	GetOrCreate(ctx context.Context, userData *model.UserData) (uuid.UUID, error)
 }
 
 type IProfile interface {
 	GetProfileData(ctx context.Context, userID uuid.UUID) (model.Profile, error)
+	IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID) (bool, error)
 }

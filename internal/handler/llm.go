@@ -46,3 +46,18 @@ func (llm *LLM) Analysis(ctx *echo.Context) error {
 
 	return domain.JSON(ctx, http.StatusOK, scores)
 }
+
+func (llm *LLM) GenerateCoverLetter(ctx *echo.Context) error {
+
+	userID, err := middleware.GetUserID(ctx)
+	if err != nil {
+		return domain.MapAppError(ctx, err)
+	}
+
+	coverLetter, err := llm.service.GetCoverLetter(ctx.Request().Context(), userID)
+	if err != nil {
+		return domain.MapAppError(ctx, err)
+	}
+
+	return domain.JSON(ctx, http.StatusOK, coverLetter)
+}
