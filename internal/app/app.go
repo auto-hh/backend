@@ -49,7 +49,7 @@ func InitJWTConfig(secretKey []byte) echojwt.Config {
 		ErrorHandler: func(ctx *echo.Context, err error) error {
 			return domain.MapAppError(
 				ctx,
-				domain.NewUnauthorized(domain.CodeUnauthorized, "handled jwt error", err),
+				domain.NewUnauthorized(domain.CodeUnauthorized, "jwt middleware error", err),
 			)
 		},
 		SigningKey:  secretKey,

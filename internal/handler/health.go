@@ -1,6 +1,10 @@
 package handler
 
-import "github.com/labstack/echo/v5"
+import (
+	"net/http"
+
+	"github.com/labstack/echo/v5"
+)
 
 type Health struct {
 }
@@ -10,5 +14,5 @@ func NewHealth() *Health {
 }
 
 func (h *Health) Health(ctx *echo.Context) error {
-	return nil
+	return ctx.NoContent(http.StatusOK)
 }
