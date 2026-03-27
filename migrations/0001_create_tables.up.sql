@@ -11,7 +11,7 @@ CREATE TABLE profiles (
     id UUID PRIMARY KEY DEFAULT UUIDV7(),
     user_id UUID REFERENCES users (id) ON DELETE CASCADE,
     experience VARCHAR(32) NOT NULL CHECK (experience != ''),
-    job_title VARCHAR(32) NOT NULL CHECK (work_title != ''),
+    job_title VARCHAR(32) NOT NULL CHECK (job_title != ''),
     grade JOB_GRADE NOT NULL,
     work_format VARCHAR(32) NOT NULL CHECK (work_format != ''),
     salary INTEGER NOT NULL CHECK (salary BETWEEN 0 AND 2000000),
