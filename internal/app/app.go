@@ -1,6 +1,9 @@
 package app
 
 import (
+	"fmt"
+
+	"github.com/auto-hh/backend/config"
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/middleware"
 	"github.com/auto-hh/backend/internal/model"
@@ -11,21 +14,20 @@ import (
 	echomw "github.com/labstack/echo/v5/middleware"
 )
 
-
-func InitServer(pool *pgxpool.Pool, secretKey []byte, llmPath string) (*echo.Echo, error) {
+func InitServer(config *config.Config, pool *pgxpool.Pool) (*echo.Echo, error) {
 	server := echo.New()
 
 	repositories := InitRepositories(pool)
-	services := InitServices(repositories, llmPath)
-	handlers := InitHandlers(services)
+	services := InitServices(config, repositories)
+	handlers := InitHandlers(config, services)
 
-	AddHandlers(server, handlers, secretKey)
+	AddHandlers(config, server, handlers)
 
 	return server, nil
 }
 
-func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
-	jwtConfig := InitJWTConfig(secretKey)
+func AddHandlers(config *config.Config, server *echo.Echo, handlers *Handlers) {
+	jwtConfig := InitJWTConfig(config.SecretKey)
 
 	server.Use(echomw.Recover())
 	server.Use(echomw.RequestLogger())
@@ -33,15 +35,20 @@ func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
 	server.GET("/health", handlers.health.Health)
 
 	groupAuth := server.Group("/auth")
+	groupUser := server.Group("/user", echojwt.WithConfig(jwtConfig))
 	groupLLM := server.Group("/llm", echojwt.WithConfig(jwtConfig))
 
 	groupAuth.GET("/begin", handlers.auth.Begin)
 	groupAuth.GET("/complete", handlers.auth.Complete)
 
+	groupUser.GET("/me", handlers.user.Me)
+	groupUser.GET("/has-profile", handlers.user.HasProfile)
+	groupUser.GET("/profile", handlers.user.Profile)
+
 	groupLLM.POST("/vacancies", handlers.llm.FindVacancies)
 	groupLLM.POST("/analysis", handlers.llm.Analysis)
+	groupLLM.POST("/generate", handlers.llm.Analysis)
 }
-
 
 func InitJWTConfig(secretKey []byte) echojwt.Config {
 	//nolint:gosec
@@ -54,9 +61,9 @@ func InitJWTConfig(secretKey []byte) echojwt.Config {
 		},
 		SigningKey:  secretKey,
 		ContextKey:  middleware.KeyToken,
-		TokenLookup: "cookie:auto-hh-access-token",
+		TokenLookup: fmt.Sprintf("cookie:%s", domain.CookieAuthJWT),
 		NewClaimsFunc: func(_ *echo.Context) jwt.Claims {
-			return new(model.JWTData)
+			return new(model.JWTAuthData)
 		},
 	}
 }

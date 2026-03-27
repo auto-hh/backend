@@ -5,7 +5,7 @@ type Profile struct {
 	JobTitle   string `json:"jobTitle"`
 	Grade      string `json:"grade"`
 	WorkFormat string `json:"workFormat"`
-	Salary     string `json:"salary"`
+	Salary     int `json:"salary"`
 	City       string `json:"city"`
 	AboutMe    string `json:"aboutMe"`
 	RecentJobs string `json:"recentJobs"`

@@ -1,17 +1,22 @@
 package app
 
-import "github.com/auto-hh/backend/internal/handler"
+import (
+	"github.com/auto-hh/backend/config"
+	"github.com/auto-hh/backend/internal/handler"
+)
 
 type Handlers struct {
 	health *handler.Health
 	auth *handler.Auth
+	user *handler.User
 	llm  *handler.LLM
 }
 
-func InitHandlers(services *Services) *Handlers {
+func InitHandlers(config *config.Config, services *Services) *Handlers {
 	return &Handlers{
 		health: handler.NewHealth(),
-		auth: handler.NewAuth(services.auth),
+		auth: handler.NewAuth(services.auth, config.StateExpirationDuration),
+		user: handler.NewUser(),
 		llm:  handler.NewLLM(services.llm),
 	}
 }
