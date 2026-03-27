@@ -5,6 +5,7 @@ import (
 
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/middleware"
+	"github.com/auto-hh/backend/internal/model"
 	"github.com/auto-hh/backend/internal/service"
 	"github.com/labstack/echo/v5"
 )
@@ -70,6 +71,7 @@ func (llm *LLM) Analysis(ctx *echo.Context) error {
 //	@Tags		llm
 //	@Param		vacancy	body		model.Vacancy	true	"vacancy"
 //	@Success	200		{object}	string
+//	@Failure	400		{object}	domain.ErrorWrapper
 //	@Failure	401		{object}	domain.ErrorWrapper
 //	@Failure	403		{object}	domain.ErrorWrapper
 //	@Failure	500		{object}	domain.ErrorWrapper
@@ -81,7 +83,14 @@ func (llm *LLM) GenerateCoverLetter(ctx *echo.Context) error {
 		return domain.MapAppError(ctx, err)
 	}
 
-	coverLetter, err := llm.service.GetCoverLetter(ctx.Request().Context(), userID)
+	var vacancy model.Vacancy
+	err = ctx.Bind(&vacancy)
+	if err != nil {
+		err = domain.NewBadRequest(domain.CodeBadRequest, "unable to parse vacancy for generation", err)
+		return domain.MapAppError(ctx, err)
+	}
+
+	coverLetter, err := llm.service.GetCoverLetter(ctx.Request().Context(), userID, vacancy)
 	if err != nil {
 		return domain.MapAppError(ctx, err)
 	}

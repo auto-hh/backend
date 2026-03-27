@@ -101,7 +101,7 @@ func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribu
 	return respData, nil
 }
 
-func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID) (string, error) {
+func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy model.Vacancy) (string, error) {
 	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodGet, llm.llmPath+"/generate")
 	if err != nil {
 		return "", err

@@ -45,12 +45,12 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 	stateCookie := &http.Cookie{
 		Name:     domain.CookieState,
 		Value:    stateJWTToken,
-		Path:     "/auth/complete",
+		Path:     "/api/auth/complete",
 		Expires:  time.Now().Add(a.stateExpirationDuration),
 		MaxAge:   int(a.stateExpirationDuration.Seconds()),
 		Secure:   false,
 		HttpOnly: true,
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 	}
 	ctx.SetCookie(stateCookie)
 
@@ -98,7 +98,7 @@ func (a *Auth) Complete(ctx *echo.Context) error {
 		MaxAge:   int(a.jwtExpirationDuration.Seconds()),
 		Secure:   false,
 		HttpOnly: true,
-		SameSite: http.SameSiteNoneMode,
+		SameSite: http.SameSiteLaxMode,
 	}
 	ctx.SetCookie(authCookie)
 
