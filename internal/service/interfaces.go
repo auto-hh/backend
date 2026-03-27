@@ -16,3 +16,7 @@ type ILLM interface {
 	FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Vacancy, error)
 	Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribute, error)
 }
+
+type IUser interface {
+	GetUserInfo(ctx context.Context, userID uuid.UUID) (model.Profile, error)
+}
