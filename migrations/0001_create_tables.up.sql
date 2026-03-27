@@ -9,7 +9,7 @@ CREATE TABLE users (
 
 CREATE TABLE profiles (
     id UUID PRIMARY KEY DEFAULT UUIDV7(),
-    user_id UUID REFERENCES users (id) ON DELETE CASCADE,
+    user_id UUID NOT NULL UNIQUE REFERENCES users (id) ON DELETE CASCADE,
     experience VARCHAR(32) NOT NULL CHECK (experience != ''),
     job_title VARCHAR(32) NOT NULL CHECK (job_title != ''),
     grade JOB_GRADE NOT NULL,

@@ -2,14 +2,23 @@ package service
 
 import (
 	"context"
+	"net/url"
 
 	"github.com/auto-hh/backend/internal/model"
 	"github.com/google/uuid"
 )
 
-type IAuth any
+type IAuth interface {
+	Begin() (string, *url.URL, error)
+	Complete(ctx context.Context, stateJWTToken string, complete model.Complete) (authJWTToken string, err error)
+}
 
 type ILLM interface {
 	FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Vacancy, error)
 	Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribute, error)
+}
+
+type IUser interface {
+	GetUserInfo(ctx context.Context, userID uuid.UUID) (model.Profile, error)
+	IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID) (bool, error)
 }

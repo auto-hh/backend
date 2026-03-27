@@ -44,3 +44,19 @@ func (p *Profile) GetProfileData(ctx context.Context, userID uuid.UUID) (model.P
 
 	return data, nil
 }
+
+func (p *Profile) IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM profiles WHERE user_id = $1::UUID);`
+	executor := p.GetExecutor(ctx)
+
+	var exists bool
+	err := executor.QueryRow(ctx, query, userID).Scan(
+		&exists,
+	)
+
+	if err != nil {
+		return false, domain.NewInternalServerError(domain.CodeInternalServerError, "failed to check if user exists", err)
+	}
+
+	return exists, nil
+}

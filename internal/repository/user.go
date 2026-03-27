@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/auto-hh/backend/internal/domain"
+	"github.com/auto-hh/backend/internal/model"
 	"github.com/google/uuid"
 )
 
@@ -34,4 +35,26 @@ func (u *User) IsUserExistsByHHID(ctx context.Context, hhID uuid.UUID) (bool, er
 	}
 
 	return exists, nil
+}
+
+func (u *User) GetOrCreate(ctx context.Context, userData *model.UserData) (uuid.UUID, error) {
+	query := `
+		INSERT INTO users (hh_id, first_name, last_name)
+		VALUES ($1::VARCHAR(32), $2::VARCHAR(32), $3::VARCHAR(32))
+		ON CONFLICT (hh_id) DO UPDATE SET first_name = users.first_name, last_name = users.last_name
+		RETURNING id;
+	`
+
+	var userID uuid.UUID
+
+	err := u.GetExecutor(ctx).QueryRow(ctx, query, userData.ID, userData.FirstName, userData.LastName).Scan(&userID)
+	if err != nil {
+		return uuid.UUID{}, domain.NewInternalServerError(
+			domain.CodeInternalServerError,
+			"database error",
+			err,
+		)
+	}
+
+	return userID, nil
 }

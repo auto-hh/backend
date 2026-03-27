@@ -10,7 +10,7 @@ import (
 
 const KeyToken string = "user"
 
-func GetJWTData(ctx *echo.Context) (*model.JWTData, error) {
+func GetJWTData(ctx *echo.Context) (*model.JWTAuthData, error) {
 	token, err := echo.ContextGet[*jwt.Token](ctx, KeyToken)
 	if err != nil {
 		return nil, domain.NewUnauthorized(
@@ -20,7 +20,7 @@ func GetJWTData(ctx *echo.Context) (*model.JWTData, error) {
 		)
 	}
 
-	jwtData, ok := token.Claims.(*model.JWTData)
+	jwtData, ok := token.Claims.(*model.JWTAuthData)
 	if !ok {
 		return nil, domain.NewForbidden(domain.CodeForbidden, "invalid token claims")
 	}

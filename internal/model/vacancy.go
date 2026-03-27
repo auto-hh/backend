@@ -2,8 +2,9 @@ package model
 
 type Vacancy struct {
 	JobTitle string `json:"jobTitle"`
-	Salary   string `json:"salary"`
+	Salary   int `json:"salary"`
 	City     string `json:"city"`
-	Body     string `json:"body"`
+	WorkFormat string `json:"workFormat"`
+	Score     float64 `json:"score"`
 	Link     string `json:"link"`
 }
