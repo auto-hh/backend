@@ -46,7 +46,7 @@ func AddHandlers(config *config.Config, server *echo.Echo, handlers *Handlers) {
 	groupUser.GET("/me", handlers.user.Me)
 	groupUser.GET("/has-profile", handlers.user.HasProfile)
 	groupUser.GET("/profile", handlers.user.Profile)
-	groupUser.POST("/profile", handlers.user.UpdateProfile)
+	// groupUser.POST("/profile", handlers.user.UpdateProfile)
 
 	groupLLM.POST("/vacancies", handlers.llm.FindVacancies)
 	groupLLM.POST("/analysis", handlers.llm.Analysis)
