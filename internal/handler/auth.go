@@ -30,7 +30,7 @@ func NewAuth(
 	}
 }
 
-// Begingit
+// Begin
 //
 //	@Tags		auth
 //	@Success	302
