@@ -2,11 +2,11 @@ package model
 
 type Profile struct {
 	Experience string `json:"experience"`
-	JobTitle   string `json:"jobTitle"`
+	JobTitle   string `json:"job_title"`
 	Grade      string `json:"grade"`
-	WorkFormat string `json:"workFormat"`
+	WorkFormat string `json:"work_format"`
 	Salary     int `json:"salary"`
 	City       string `json:"city"`
-	AboutMe    string `json:"aboutMe"`
-	RecentJobs string `json:"recentJobs"`
+	AboutMe    string `json:"about_me"`
+	RecentJobs string `json:"recent_jobs"`
 }

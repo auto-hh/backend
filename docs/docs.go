@@ -402,7 +402,7 @@ const docTemplate = `{
         "model.Attribute": {
             "type": "object",
             "properties": {
-                "isWord": {
+                "is_word": {
                     "type": "boolean"
                 },
                 "score": {
@@ -416,7 +416,7 @@ const docTemplate = `{
         "model.Profile": {
             "type": "object",
             "properties": {
-                "aboutMe": {
+                "about_me": {
                     "type": "string"
                 },
                 "city": {
@@ -428,16 +428,16 @@ const docTemplate = `{
                 "grade": {
                     "type": "string"
                 },
-                "jobTitle": {
+                "job_title": {
                     "type": "string"
                 },
-                "recentJobs": {
+                "recent_jobs": {
                     "type": "string"
                 },
                 "salary": {
                     "type": "integer"
                 },
-                "workFormat": {
+                "work_format": {
                     "type": "string"
                 }
             }
@@ -448,7 +448,7 @@ const docTemplate = `{
                 "city": {
                     "type": "string"
                 },
-                "jobTitle": {
+                "job_title": {
                     "type": "string"
                 },
                 "link": {
@@ -460,7 +460,7 @@ const docTemplate = `{
                 "score": {
                     "type": "number"
                 },
-                "workFormat": {
+                "work_format": {
                     "type": "string"
                 }
             }
