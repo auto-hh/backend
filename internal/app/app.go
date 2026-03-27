@@ -49,7 +49,7 @@ func AddHandlers(server *echo.Echo, handlers *Handlers, secretKey []byte) {
 
 	server.Use(echomw.Recover())
 	server.Use(echomw.RequestLogger())
-	//TODO: add CORS middleware
+	// TODO: add CORS middleware
 
 	groupAuth := server.Group("/auth")
 	groupLLM := server.Group("/llm", echojwt.WithConfig(jwtConfig))
@@ -70,6 +70,7 @@ func InitHandlers(services *Services) *Handlers {
 
 func InitServices(repositories *Repositories, llmPath string) *Services {
 	client := &http.Client{}
+
 	return &Services{
 		auth: service.NewAuth(repositories.user),
 		llm:  service.NewLLM(repositories.profile, client, llmPath),
