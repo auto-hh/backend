@@ -8,6 +8,7 @@ RUN go mod download
 
 COPY ./cmd/ ./cmd/
 COPY ./config/ ./config/
+COPY ./docs/ ./docs/
 COPY ./internal/ ./internal/
 COPY ./pkg/ ./pkg/
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./build/ ./...
