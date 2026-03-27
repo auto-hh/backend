@@ -3,7 +3,7 @@ definitions:
     enum:
     - BAD_REQUEST
     - NOT_FOUND
-    - ANAUTHORIZED
+    - UNAUTHORIZED
     - FORBIDDEN
     - INTERNAL_SERVER_ERROR
     type: string
@@ -25,6 +25,8 @@ definitions:
     type: object
   model.Attribute:
     properties:
+      isWord:
+        type: boolean
       score:
         type: number
       word:
@@ -129,6 +131,13 @@ paths:
       - llm
   /llm/generate:
     post:
+      parameters:
+      - description: vacancy
+        in: body
+        name: vacancy
+        required: true
+        schema:
+          $ref: '#/definitions/model.Vacancy'
       responses:
         "200":
           description: OK
@@ -234,6 +243,37 @@ paths:
             $ref: '#/definitions/domain.ErrorWrapper'
         "404":
           description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - user
+    post:
+      parameters:
+      - description: profile
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/model.Profile'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/domain.ErrorWrapper'
         "500":
