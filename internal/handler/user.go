@@ -22,6 +22,21 @@ func (u *User) Me(ctx *echo.Context) error {
 }
 
 func (u *User) HasProfile(ctx *echo.Context) error {
+
+	userID, err := middleware.GetUserID(ctx)
+	if err != nil {
+		return domain.MapAppError(ctx, err)
+	}
+	exists, err := u.service.IsProfileExistsByUserID(ctx.Request().Context(), userID)
+
+	if err != nil {
+		return domain.MapAppError(ctx, err)
+	}
+
+	if !exists {
+		return ctx.NoContent(http.StatusNotFound)
+	}
+
 	return ctx.NoContent(http.StatusNoContent)
 }
 
@@ -36,5 +51,6 @@ func (u *User) Profile(ctx *echo.Context) error {
 	if err != nil {
 		return err
 	}
+
 	return ctx.JSON(http.StatusOK, profileInfo)
 }

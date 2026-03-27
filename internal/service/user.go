@@ -29,3 +29,7 @@ func (user *User) GetUserInfo(ctx context.Context, userID uuid.UUID) (model.Prof
 
 	return rawUserInfo, nil
 }
+
+func (user *User) IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID) (bool, error) {
+	return user.repository.IsProfileExistsByUserID(ctx, userID)
+}

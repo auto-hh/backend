@@ -19,4 +19,5 @@ type ILLM interface {
 
 type IUser interface {
 	GetUserInfo(ctx context.Context, userID uuid.UUID) (model.Profile, error)
+	IsProfileExistsByUserID(ctx context.Context, userID uuid.UUID) (bool, error)
 }
