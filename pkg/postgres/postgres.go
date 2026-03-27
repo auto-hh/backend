@@ -10,7 +10,7 @@ import (
 func NewPool(ctx context.Context, dsn string) (*pgxpool.Pool, error) {
 	pool, err := pgxpool.New(ctx, dsn)
 	if err != nil {
-		return nil, fmt.Errorf("pgxpool.NewWithConfig: %w", err)
+		return nil, fmt.Errorf("pgxpool.New: %w", err)
 	}
 
 	return pool, nil

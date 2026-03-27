@@ -5,29 +5,11 @@ import (
 	"os"
 )
 
-const (
-	EnvLocal = "local"
-	EnvDev   = "dev"
-	EnvProd  = "prod"
-)
-
-func InitLogger(env string) {
-	var handler slog.Handler
-
-	switch env {
-	case EnvLocal:
-		handler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
-	case EnvDev:
-		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelDebug,
-		})
-	default:
-		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-			Level: slog.LevelInfo,
-		})
+func InitLogger(level slog.Level) *slog.Logger {
+	options := &slog.HandlerOptions{
+		Level: level,
 	}
+	handler := slog.NewJSONHandler(os.Stdout, options)
 
-	slog.SetDefault(slog.New(handler))
+	return slog.New(handler)
 }

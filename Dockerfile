@@ -6,7 +6,10 @@ COPY ./go.mod ./
 COPY ./go.sum ./
 RUN go mod download
 
-COPY . .
+COPY ./cmd/ ./cmd/
+COPY ./config/ ./config/
+COPY ./internal/ ./internal/
+COPY ./pkg/ ./pkg/
 RUN CGO_ENABLED=0 GOOS=linux go build -o ./build/ ./...
 
 
@@ -22,4 +25,4 @@ RUN curl -L https://github.com/golang-migrate/migrate/releases/download/$MIGRATE
 COPY ./migrations/ ./migrations/
 COPY --from=builder /service/build/server .
 
-CMD ["sh", "-c", "./migrate -source file://migrations/ -database postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DB?sslmode=disable up && ./server"]
+CMD ["sh", "-c", "./migrate -source file://migrations/ -database postgres://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST:$POSTGRES_PORT/$POSTGRES_DATABASE?sslmode=disable up && ./server"]

@@ -3,5 +3,4 @@
 .env.example
 .golangci.yaml
 .gitignore
-Dockerfile
 LICENSE

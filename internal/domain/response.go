@@ -2,13 +2,14 @@ package domain
 
 import (
 	"errors"
+	"log/slog"
 	"net/http"
 
 	"github.com/labstack/echo/v5"
 )
 
 type ErrorResponse struct {
-	code AppErrorCode
+	Code AppErrorCode `json:"code"`
 }
 
 func JSON(ctx *echo.Context, code int, data any) error {
@@ -27,19 +28,21 @@ func MapAppError(ctx *echo.Context, err error) error {
 	if errors.As(err, &appError) {
 		status, ok := mapAppErr[appError.errorType]
 		if ok {
-			return JSON(ctx, status, map[string]ErrorResponse{"error": {code: appError.code}})
+			ctx.Logger().Debug("known app error", slog.String("error", err.Error()))
+			return JSON(ctx, status, map[string]ErrorResponse{"error": {Code: appError.code}})
 		}
-
+		ctx.Logger().Error("unknown app error", slog.String("error", err.Error()))
 		return JSON(
 			ctx,
 			http.StatusInternalServerError,
-			map[string]ErrorResponse{"error": {code: CodeInternalServerError}},
+			map[string]ErrorResponse{"error": {Code: CodeInternalServerError}},
 		)
 	}
 
+	ctx.Logger().Error("unknown error", slog.String("error", err.Error()))
 	return JSON(
 		ctx,
 		http.StatusInternalServerError,
-		map[string]ErrorResponse{"error": {code: CodeInternalServerError}},
+		map[string]ErrorResponse{"error": {Code: CodeInternalServerError}},
 	)
 }

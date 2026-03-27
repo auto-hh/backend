@@ -51,9 +51,9 @@ func LoadConfig() (*Config, error) {
 	clientID := keyClientID.GetValueDefault("client_id")
 	clientSecret := keyClientSecret.GetValueDefault("client_secret")
 	redirectURI := keyRedirectURI.GetValueDefault("redirect_uri")
-	appName := keyRedirectURI.GetValueDefault("app_name")
-	appVersion := keyRedirectURI.GetValueDefault("app_version")
-	devContact := keyRedirectURI.GetValueDefault("dev_contact")
+	appName := keyAppName.GetValueDefault("app_name")
+	appVersion := keyAppVersion.GetValueDefault("app_version")
+	devContact := keyDevContact.GetValueDefault("dev_contact")
 	siteURL := keySiteURL.GetValueDefault("https://localhost/")
 
 	llmPath := keyLLMPath.GetValue()

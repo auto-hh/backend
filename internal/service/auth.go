@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -36,6 +37,7 @@ func NewAuth(repositoryUser repository.IUser, client *http.Client, secretKey []b
 		client: client,
 		secretKey: secretKey,
 		clientID: clientID,
+		clientSecret: clientSecret,
 		redirectURI: redirectURI,
 		appName: appName,
 		appVersion: appVersion,
@@ -133,23 +135,24 @@ func (a *Auth) getHHData(ctx context.Context, code string) (*model.HHData, error
 	}
 	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://api.hh.ru/token", strings.NewReader(params.Encode()))
 	if err != nil {
-		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to create request", err)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to create hh data request", err)
 	}
 	request.Header.Set(echo.HeaderContentType, echo.MIMEApplicationForm)
 	request.Header.Set("HH-User-Agent", fmt.Sprintf("%s/%s (%s)", a.appName, a.appVersion, a.devContact))
 	
 	response, err := a.client.Do(request)
 	if err != nil {
-		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to do request", err)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to do hh data request", err)
 	}
 	defer func ()  {
 		closeErr := response.Body.Close()
 		if closeErr != nil {
-			err = domain.NewInternalServerError(domain.CodeInternalServerError, "unable to close response body", err, closeErr)
+			err = domain.NewInternalServerError(domain.CodeInternalServerError, "unable to close hh data response body", err, closeErr)
 		}
 	}()
 	if response.StatusCode != http.StatusOK {
-		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "response status is not ok")
+		data, _ := io.ReadAll(response.Body)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "hh data response status is not ok: "+string(data))
 	}
 
 	var hhData model.HHData
@@ -161,25 +164,27 @@ func (a *Auth) getHHData(ctx context.Context, code string) (*model.HHData, error
 }
 
 func (a *Auth) getUserData(ctx context.Context, accessToken string) (*model.UserData, error) {
-	request, err := http.NewRequestWithContext(ctx, http.MethodPost, "https://api.hh.ru/me", nil)
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://api.hh.ru/me", nil)
 	if err != nil {
-		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to create request", err)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to create user data request", err)
 	}
+	request.Header.Set(echo.HeaderAccept, echo.MIMEApplicationJSON)
 	request.Header.Set(echo.HeaderAuthorization, fmt.Sprintf("Bearer %s", accessToken))
 	request.Header.Set("HH-User-Agent", fmt.Sprintf("%s/%s (%s)", a.appName, a.appVersion, a.devContact))
 	
 	response, err := a.client.Do(request)
 	if err != nil {
-		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to do request", err)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "unable to do user data request", err)
 	}
 	defer func ()  {
 		closeErr := response.Body.Close()
 		if closeErr != nil {
-			err = domain.NewInternalServerError(domain.CodeInternalServerError, "unable to close response body", err, closeErr)
+			err = domain.NewInternalServerError(domain.CodeInternalServerError, "unable to close user data response body", err, closeErr)
 		}
 	}()
 	if response.StatusCode != http.StatusOK {
-		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "response status is not ok")
+		data, _ := io.ReadAll(response.Body)
+		return nil, domain.NewInternalServerError(domain.CodeInternalServerError, "user data response status is not ok: "+string(data))
 	}
 
 	var userData model.UserData

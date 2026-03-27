@@ -7,6 +7,7 @@ import (
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/middleware"
 	"github.com/auto-hh/backend/internal/model"
+	"github.com/auto-hh/backend/pkg/logger"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	echojwt "github.com/labstack/echo-jwt/v5"
@@ -16,6 +17,7 @@ import (
 
 func InitServer(config *config.Config, pool *pgxpool.Pool) (*echo.Echo, error) {
 	server := echo.New()
+	server.Logger = logger.InitLogger(config.LogLevel)
 
 	repositories := InitRepositories(pool)
 	services := InitServices(config, repositories)
