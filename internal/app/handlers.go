@@ -15,7 +15,7 @@ type Handlers struct {
 func InitHandlers(config *config.Config, services *Services) *Handlers {
 	return &Handlers{
 		health: handler.NewHealth(),
-		auth: handler.NewAuth(services.auth, config.StateExpirationDuration),
+		auth: handler.NewAuth(services.auth, config.StateExpirationDuration, config.JWTExpirationDuration, config.SiteURL),
 		user: handler.NewUser(),
 		llm:  handler.NewLLM(services.llm),
 	}

@@ -14,7 +14,12 @@ type Config struct {
 	JWTExpirationDuration time.Duration
 	StateExpirationDuration time.Duration
 	ClientID string
+	ClientSecret string
 	RedirectURI string
+	AppName string
+	AppVersion string
+	DevContact string
+	SiteURL string
 	LLMPath               string
 	postgresConfig        *PostgresConfig
 }
@@ -44,7 +49,12 @@ func LoadConfig() (*Config, error) {
 	}
 
 	clientID := keyClientID.GetValueDefault("client_id")
+	clientSecret := keyClientSecret.GetValueDefault("client_secret")
 	redirectURI := keyRedirectURI.GetValueDefault("redirect_uri")
+	appName := keyRedirectURI.GetValueDefault("app_name")
+	appVersion := keyRedirectURI.GetValueDefault("app_version")
+	devContact := keyRedirectURI.GetValueDefault("dev_contact")
+	siteURL := keySiteURL.GetValueDefault("https://localhost/")
 
 	llmPath := keyLLMPath.GetValue()
 
@@ -57,7 +67,12 @@ func LoadConfig() (*Config, error) {
 		JWTExpirationDuration: time.Duration(jwtExpirationDuration) * time.Hour,
 		StateExpirationDuration: time.Duration(stateExpirationDuration) * time.Minute,
 		ClientID: clientID,
+		ClientSecret: clientSecret,
 		RedirectURI: redirectURI,
+		AppName: appName,
+		AppVersion: appVersion,
+		DevContact: devContact,
+		SiteURL: siteURL,
 		LLMPath:               llmPath,
 		postgresConfig:        postgresConfig,
 	}

@@ -9,7 +9,12 @@ const (
 	keyJWTExpirationDuration config.Key = "JWT_EXPIRATION_DURATION"
 	keyStateExpirationDuration config.Key = "STATE_EXPIRATION_DURATION"
 	keyClientID config.Key = "CLIENT_ID"
+	keyClientSecret config.Key = "CLIENT_SECRET"
 	keyRedirectURI config.Key = "REDIRECT_URI"
+	AppName config.Key = "APP_NAME"
+	AppVersion config.Key = "APP_VERSION"
+	DevContact config.Key = "DEV_CONTACT"
+	keySiteURL config.Key = "SITE_URL"
 	keyLLMPath               config.Key = "LLM_PATH"
 	KeyPostgresUser          config.Key = "POSTGRES_USER"
 	//nolint:gosec
