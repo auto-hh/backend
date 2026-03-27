@@ -69,6 +69,126 @@ const docTemplate = `{
                 }
             }
         },
+        "/llm/analysis": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Attribute"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/llm/generate": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
+        "/llm/vacancies": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "llm"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/model.Vacancy"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    }
+                }
+            }
+        },
         "/user/has-profile": {
             "get": {
                 "security": [
@@ -218,6 +338,17 @@ const docTemplate = `{
                 }
             }
         },
+        "model.Attribute": {
+            "type": "object",
+            "properties": {
+                "score": {
+                    "type": "number"
+                },
+                "word": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Profile": {
             "type": "object",
             "properties": {
@@ -241,6 +372,29 @@ const docTemplate = `{
                 },
                 "salary": {
                     "type": "integer"
+                },
+                "workFormat": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.Vacancy": {
+            "type": "object",
+            "properties": {
+                "city": {
+                    "type": "string"
+                },
+                "jobTitle": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "salary": {
+                    "type": "integer"
+                },
+                "score": {
+                    "type": "number"
                 },
                 "workFormat": {
                     "type": "string"

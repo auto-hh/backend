@@ -19,6 +19,13 @@ func NewLLM(service service.ILLM) *LLM {
 	}
 }
 
+// @Tags         llm
+// @Success      200 {object} []model.Vacancy
+// @Failure      401 {object} domain.ErrorWrapper
+// @Failure      403 {object} domain.ErrorWrapper
+// @Failure      500 {object} domain.ErrorWrapper
+// @Security      BearerAuth
+// @Router       /llm/vacancies [post]
 func (llm *LLM) FindVacancies(ctx *echo.Context) error {
 	userID, err := middleware.GetUserID(ctx)
 	if err != nil {
@@ -33,6 +40,13 @@ func (llm *LLM) FindVacancies(ctx *echo.Context) error {
 	return domain.JSON(ctx, http.StatusOK, vacancies)
 }
 
+// @Tags         llm
+// @Success      200 {object} []model.Attribute
+// @Failure      401 {object} domain.ErrorWrapper
+// @Failure      403 {object} domain.ErrorWrapper
+// @Failure      500 {object} domain.ErrorWrapper
+// @Security      BearerAuth
+// @Router       /llm/analysis [post]
 func (llm *LLM) Analysis(ctx *echo.Context) error {
 	userID, err := middleware.GetUserID(ctx)
 	if err != nil {
@@ -47,6 +61,13 @@ func (llm *LLM) Analysis(ctx *echo.Context) error {
 	return domain.JSON(ctx, http.StatusOK, scores)
 }
 
+// @Tags         llm
+// @Success      200 {object} string
+// @Failure      401 {object} domain.ErrorWrapper
+// @Failure      403 {object} domain.ErrorWrapper
+// @Failure      500 {object} domain.ErrorWrapper
+// @Security      BearerAuth
+// @Router       /llm/generate [post]
 func (llm *LLM) GenerateCoverLetter(ctx *echo.Context) error {
 
 	userID, err := middleware.GetUserID(ctx)

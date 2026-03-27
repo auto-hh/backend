@@ -42,7 +42,7 @@ func (a *Auth) Begin(ctx *echo.Context) error {
 		Path: "/auth/complete",
 		Expires: time.Now().Add(a.stateExpirationDuration),
 		MaxAge: int(a.stateExpirationDuration.Seconds()),
-		Secure: true,
+		Secure: false,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	}
@@ -79,7 +79,7 @@ func (a *Auth) Complete(ctx *echo.Context) error {
 		Path: "/",
 		Expires: time.Now().Add(a.jwtExpirationDuration),
 		MaxAge: int(a.jwtExpirationDuration.Seconds()),
-		Secure: true,
+		Secure: false,
 		HttpOnly: true,
 		SameSite: http.SameSiteNoneMode,
 	}
