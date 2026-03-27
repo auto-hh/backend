@@ -13,8 +13,10 @@ type User struct {
 	service service.IUser
 }
 
-func NewUser() *User {
-	return &User{}
+func NewUser(service service.IUser) *User {
+	return &User{
+		service: service,
+	}
 }
 
 func (u *User) Me(ctx *echo.Context) error {
