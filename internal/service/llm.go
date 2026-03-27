@@ -101,6 +101,34 @@ func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribu
 	return respData, nil
 }
 
+func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID) (string, error) {
+	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodGet, llm.llmPath+"/generate")
+	if err != nil {
+		return "", err
+	}
+	response, err := llm.client.Do(requestLLM)
+
+	if err != nil {
+		return "", domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to send requestLLM", err)
+	}
+	defer response.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		return "", domain.NewInternalServerError(
+			domain.CodeInternalServerError,
+			"Failed to receive response",
+			err,
+		)
+	}
+
+	var coverLetter string
+	err = json.NewDecoder(response.Body).Decode(&coverLetter)
+	if err != nil {
+		return "", domain.NewInternalServerError(domain.CodeInternalServerError, "Failed to convert cover Letter to string", err)
+	}
+
+	return coverLetter, nil
+}
+
 func (llm *LLM) makeLLMRequest(
 	ctx context.Context,
 	userID uuid.UUID,
