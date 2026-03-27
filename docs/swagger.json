@@ -393,7 +393,7 @@
         "model.Attribute": {
             "type": "object",
             "properties": {
-                "isWord": {
+                "is_word": {
                     "type": "boolean"
                 },
                 "score": {
@@ -407,7 +407,7 @@
         "model.Profile": {
             "type": "object",
             "properties": {
-                "aboutMe": {
+                "about_me": {
                     "type": "string"
                 },
                 "city": {
@@ -419,16 +419,16 @@
                 "grade": {
                     "type": "string"
                 },
-                "jobTitle": {
+                "job_title": {
                     "type": "string"
                 },
-                "recentJobs": {
+                "recent_jobs": {
                     "type": "string"
                 },
                 "salary": {
                     "type": "integer"
                 },
-                "workFormat": {
+                "work_format": {
                     "type": "string"
                 }
             }
@@ -439,7 +439,7 @@
                 "city": {
                     "type": "string"
                 },
-                "jobTitle": {
+                "job_title": {
                     "type": "string"
                 },
                 "link": {
@@ -451,7 +451,7 @@
                 "score": {
                     "type": "number"
                 },
-                "workFormat": {
+                "work_format": {
                     "type": "string"
                 }
             }

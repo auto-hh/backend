@@ -25,7 +25,7 @@ definitions:
     type: object
   model.Attribute:
     properties:
-      isWord:
+      is_word:
         type: boolean
       score:
         type: number
@@ -34,7 +34,7 @@ definitions:
     type: object
   model.Profile:
     properties:
-      aboutMe:
+      about_me:
         type: string
       city:
         type: string
@@ -42,20 +42,20 @@ definitions:
         type: string
       grade:
         type: string
-      jobTitle:
+      job_title:
         type: string
-      recentJobs:
+      recent_jobs:
         type: string
       salary:
         type: integer
-      workFormat:
+      work_format:
         type: string
     type: object
   model.Vacancy:
     properties:
       city:
         type: string
-      jobTitle:
+      job_title:
         type: string
       link:
         type: string
@@ -63,7 +63,7 @@ definitions:
         type: integer
       score:
         type: number
-      workFormat:
+      work_format:
         type: string
     type: object
 info:

@@ -8,7 +8,7 @@ import (
 type JWTAuthData struct {
 	jwt.RegisteredClaims
 
-	UserID uuid.UUID `json:"userId"`
+	UserID uuid.UUID `json:"user_id"`
 }
 
 type JWTStateData struct {
