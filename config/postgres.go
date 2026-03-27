@@ -33,7 +33,7 @@ func LoadPostgresConfig() *PostgresConfig {
 
 func (c *PostgresConfig) DSN() string {
 	return fmt.Sprintf(
-		"postgres://%s:%s@%s/%s?sslmode=disable",
+		"postgres://%s:%s@%s:%s?sslmode=disable",
 		c.user,
 		c.password,
 		net.JoinHostPort(c.host, c.port),
