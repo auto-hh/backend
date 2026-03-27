@@ -66,7 +66,6 @@ func (u *User) HasProfile(ctx *echo.Context) error {
 // @Security      BearerAuth
 // @Router       /user/profile [get]
 func (u *User) Profile(ctx *echo.Context) error {
-
 	userID, err := middleware.GetUserID(ctx)
 	if err != nil {
 		return domain.MapAppError(ctx, err)
@@ -81,7 +80,8 @@ func (u *User) Profile(ctx *echo.Context) error {
 }
 
 // @Tags         user
-// @Success      200 {object}
+// @Param profile body model.Profile true "profile"
+// @Success      200
 // @Failure      400 {object} domain.ErrorWrapper
 // @Failure      401 {object} domain.ErrorWrapper
 // @Failure      403 {object} domain.ErrorWrapper

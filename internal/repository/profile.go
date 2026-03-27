@@ -2,13 +2,12 @@ package repository
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 
 	"github.com/auto-hh/backend/internal/domain"
 	"github.com/auto-hh/backend/internal/model"
 	"github.com/google/uuid"
-	"github.com/jackc/pgerrcode"
-	"github.com/jackc/pgx/v5/pgconn"
 )
 
 type Profile struct {
@@ -38,12 +37,8 @@ func (p *Profile) GetProfileData(ctx context.Context, userID uuid.UUID) (model.P
 		&data.RecentJobs,
 	)
 	if err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) {
-			switch pgErr.Code {
-			case pgerrcode.UniqueViolation:
-				return model.Profile{}, domain.NewNotFound(domain.CodeNotFound, "not found user profile")
-			}
+		if errors.Is(err, sql.ErrNoRows) {
+			return model.Profile{}, nil
 		}
 
 		return model.Profile{}, domain.NewInternalServerError(

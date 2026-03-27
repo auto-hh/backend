@@ -120,6 +120,17 @@ const docTemplate = `{
                 "tags": [
                     "llm"
                 ],
+                "parameters": [
+                    {
+                        "description": "vacancy",
+                        "name": "vacancy",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Vacancy"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -301,6 +312,56 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "tags": [
+                    "user"
+                ],
+                "parameters": [
+                    {
+                        "description": "profile",
+                        "name": "profile",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.Profile"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
+                        }
+                    }
+                }
             }
         }
     },
@@ -310,7 +371,7 @@ const docTemplate = `{
             "enum": [
                 "BAD_REQUEST",
                 "NOT_FOUND",
-                "ANAUTHORIZED",
+                "UNAUTHORIZED",
                 "FORBIDDEN",
                 "INTERNAL_SERVER_ERROR"
             ],
@@ -341,6 +402,9 @@ const docTemplate = `{
         "model.Attribute": {
             "type": "object",
             "properties": {
+                "isWord": {
+                    "type": "boolean"
+                },
                 "score": {
                     "type": "number"
                 },
