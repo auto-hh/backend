@@ -101,14 +101,59 @@ func (llm *LLM) FindVacancies(ctx *echo.Context) error {
 //	@Security	BearerAuth
 //	@Router		/llm/analysis [post].
 func (llm *LLM) Analysis(ctx *echo.Context) error {
-	userID, err := middleware.GetUserID(ctx)
+	_, err := middleware.GetUserID(ctx)
 	if err != nil {
 		return domain.MapAppError(ctx, err)
 	}
 
-	scores, err := llm.service.Analysis(ctx.Request().Context(), userID)
-	if err != nil {
-		return domain.MapAppError(ctx, err)
+	// scores, err := llm.service.Analysis(ctx.Request().Context(), userID)
+	// if err != nil {
+	// 	return domain.MapAppError(ctx, err)
+	// }
+	scores := []model.Attribute{
+		{ Text: "Senior", Weight: 1.0, IsWord: true },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Python", Weight: 0.87, IsWord: true },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Backend", Weight: 0.72, IsWord: true },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Developer", Weight: 0.65, IsWord: true },
+		{ Text: ".", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Опыт", Weight: 0.15, IsWord: true },
+		{ Text: ":", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "5", Weight: 0.08, IsWord: true },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "лет", Weight: 0.05, IsWord: true },
+		{ Text: ".", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Навыки", Weight: 0.12, IsWord: true },
+		{ Text: ":", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Python", Weight: 0.82, IsWord: true },
+		{ Text: ",", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "FastAPI", Weight: 0.45, IsWord: true },
+		{ Text: ",", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "PostgreSQL", Weight: 0.38, IsWord: true },
+		{ Text: ",", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Docker", Weight: 0.32, IsWord: true },
+		{ Text: ",", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Kafka", Weight: 0.28, IsWord: true },
+		{ Text: ".", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "Образование", Weight: 0.1, IsWord: true },
+		{ Text: ":", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "МГУ", Weight: 0.18, IsWord: true },
+		{ Text: ",", Weight: 0.0, IsWord: false },
+		{ Text: " ", Weight: 0.0, IsWord: false },
+		{ Text: "2020", Weight: 0.05, IsWord: true },
+		{ Text: ".", Weight: 0.0, IsWord: false },
 	}
 
 	return domain.JSON(ctx, http.StatusOK, scores)
