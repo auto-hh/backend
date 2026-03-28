@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 
 	"github.com/auto-hh/backend/internal/domain"
@@ -29,7 +30,7 @@ func (llm *LLM) FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Va
 		return nil, err
 	}
 
-	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/vacancies", rawUserInfo)
+	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/search", rawUserInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -46,9 +47,10 @@ func (llm *LLM) FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Va
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
+		responseData, _ := io.ReadAll(response.Body)
 		return nil, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
-			"Failed to  receive response",
+			"vacancies response status is not ok: "+string(responseData),
 			err,
 		)
 	}
@@ -73,7 +75,7 @@ func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribu
 		return nil, err
 	}
 
-	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/analysis", rawUserInfo)
+	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/analyze", rawUserInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -90,9 +92,10 @@ func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribu
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
+		responseData, _ := io.ReadAll(response.Body)
 		return nil, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
-			"Failed to receive response",
+			"analyze response status is not ok: "+string(responseData),
 			err,
 		)
 	}
@@ -101,9 +104,10 @@ func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribu
 
 	err = json.NewDecoder(response.Body).Decode(&respData)
 	if err != nil {
+		responseData, _ := io.ReadAll(response.Body)
 		return nil, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
-			"Failed to read response body",
+			"unable to decode analyze data: "+string(responseData),
 			err,
 		)
 	}
@@ -136,9 +140,10 @@ func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy mo
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
+		responseData, _ := io.ReadAll(response.Body)
 		return model.CoverLetter{}, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
-			"Failed to receive response",
+			"generate response status is not ok: "+string(responseData),
 			err,
 		)
 	}
