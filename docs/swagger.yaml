@@ -27,10 +27,10 @@ definitions:
     properties:
       is_word:
         type: boolean
-      score:
-        type: number
-      word:
+      text:
         type: string
+      weight:
+        type: number
     type: object
   model.CoverLetter:
     properties:
@@ -60,6 +60,8 @@ definitions:
     type: object
   model.Vacancy:
     properties:
+      body:
+        type: string
       city:
         type: string
       job_title:
@@ -67,7 +69,7 @@ definitions:
       link:
         type: string
       salary:
-        type: integer
+        type: string
       score:
         type: number
       work_format:

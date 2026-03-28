@@ -402,11 +402,11 @@
                 "is_word": {
                     "type": "boolean"
                 },
-                "score": {
-                    "type": "number"
-                },
-                "word": {
+                "text": {
                     "type": "string"
+                },
+                "weight": {
+                    "type": "number"
                 }
             }
         },
@@ -453,6 +453,9 @@
         "model.Vacancy": {
             "type": "object",
             "properties": {
+                "body": {
+                    "type": "string"
+                },
                 "city": {
                     "type": "string"
                 },
@@ -463,7 +466,7 @@
                     "type": "string"
                 },
                 "salary": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "score": {
                     "type": "number"

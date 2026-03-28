@@ -411,11 +411,11 @@ const docTemplate = `{
                 "is_word": {
                     "type": "boolean"
                 },
-                "score": {
-                    "type": "number"
-                },
-                "word": {
+                "text": {
                     "type": "string"
+                },
+                "weight": {
+                    "type": "number"
                 }
             }
         },
@@ -462,6 +462,9 @@ const docTemplate = `{
         "model.Vacancy": {
             "type": "object",
             "properties": {
+                "body": {
+                    "type": "string"
+                },
                 "city": {
                     "type": "string"
                 },
@@ -472,7 +475,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "salary": {
-                    "type": "integer"
+                    "type": "string"
                 },
                 "score": {
                     "type": "number"
