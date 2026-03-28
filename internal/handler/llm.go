@@ -78,7 +78,7 @@ func (llm *LLM) Analysis(ctx *echo.Context) error {
 //	@Security	BearerAuth
 //	@Router		/llm/generate [post].
 func (llm *LLM) GenerateCoverLetter(ctx *echo.Context) error {
-	userID, err := middleware.GetUserID(ctx)
+	_, err := middleware.GetUserID(ctx)
 	if err != nil {
 		return domain.MapAppError(ctx, err)
 	}
@@ -90,9 +90,14 @@ func (llm *LLM) GenerateCoverLetter(ctx *echo.Context) error {
 		return domain.MapAppError(ctx, err)
 	}
 
-	coverLetter, err := llm.service.GetCoverLetter(ctx.Request().Context(), userID, vacancy)
-	if err != nil {
-		return domain.MapAppError(ctx, err)
+	// coverLetter, err := llm.service.GetCoverLetter(ctx.Request().Context(), userID, vacancy)
+	// if err != nil {
+	// 	return domain.MapAppError(ctx, err)
+	// }
+
+	coverLetter := model.CoverLetter{
+		Letter: "THE BEST LETTER IN THE WORLD!!!",
+		Status: "VERY GOOOD!!!!!!!!!!",
 	}
 
 	return domain.JSON(ctx, http.StatusOK, coverLetter)
