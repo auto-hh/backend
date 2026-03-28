@@ -124,7 +124,7 @@ func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy mo
 		Resume: rawUserInfo,
 		Vacancy: vacancy,
 	}
-	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodGet, llm.llmPath+"/generate", generateRequest)
+	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/generate", generateRequest)
 	if err != nil {
 		return model.CoverLetter{}, err
 	}
