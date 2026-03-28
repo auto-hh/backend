@@ -20,7 +20,7 @@ type IAuth interface {
 type ILLM interface {
 	FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Vacancy, error)
 	Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribute, error)
-	GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy model.Vacancy) (string, error)
+	GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy model.Vacancy) (model.CoverLetter, error)
 }
 
 type IUser interface {

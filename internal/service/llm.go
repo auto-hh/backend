@@ -24,7 +24,12 @@ func NewLLM(repository repository.IProfile, client *http.Client, llmPath string)
 }
 
 func (llm *LLM) FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Vacancy, error) {
-	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/vacancies")
+	rawUserInfo, err := llm.repository.GetProfileData(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/vacancies", rawUserInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -63,7 +68,12 @@ func (llm *LLM) FindVacancies(ctx context.Context, userID uuid.UUID) ([]model.Va
 }
 
 func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribute, error) {
-	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/analysis")
+	rawUserInfo, err := llm.repository.GetProfileData(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodPost, llm.llmPath+"/analysis", rawUserInfo)
 	if err != nil {
 		return nil, err
 	}
@@ -101,15 +111,23 @@ func (llm *LLM) Analysis(ctx context.Context, userID uuid.UUID) ([]model.Attribu
 	return respData, nil
 }
 
-func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy model.Vacancy) (string, error) {
-	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodGet, llm.llmPath+"/generate")
+func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy model.Vacancy) (model.CoverLetter, error) {
+	rawUserInfo, err := llm.repository.GetProfileData(ctx, userID)
 	if err != nil {
-		return "", err
+		return model.CoverLetter{}, err
+	}
+	generateRequest := model.GenerateRequest{
+		Resume: rawUserInfo,
+		Vacancy: vacancy,
+	}
+	requestLLM, err := llm.makeLLMRequest(ctx, userID, http.MethodGet, llm.llmPath+"/generate", generateRequest)
+	if err != nil {
+		return model.CoverLetter{}, err
 	}
 
 	response, err := llm.client.Do(requestLLM)
 	if err != nil {
-		return "", domain.NewInternalServerError(
+		return model.CoverLetter{}, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
 			"Failed to send requestLLM",
 			err,
@@ -118,20 +136,20 @@ func (llm *LLM) GetCoverLetter(ctx context.Context, userID uuid.UUID, vacancy mo
 	defer response.Body.Close()
 
 	if response.StatusCode != http.StatusOK {
-		return "", domain.NewInternalServerError(
+		return model.CoverLetter{}, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
 			"Failed to receive response",
 			err,
 		)
 	}
 
-	var coverLetter string
+	var coverLetter model.CoverLetter
 
 	err = json.NewDecoder(response.Body).Decode(&coverLetter)
 	if err != nil {
-		return "", domain.NewInternalServerError(
+		return model.CoverLetter{}, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
-			"Failed to convert cover Letter to string",
+			"Failed to decode cover letter",
 			err,
 		)
 	}
@@ -143,22 +161,18 @@ func (llm *LLM) makeLLMRequest(
 	ctx context.Context,
 	userID uuid.UUID,
 	method, customURL string,
+	data any,
 ) (*http.Request, error) {
-	rawUserInfo, err := llm.repository.GetProfileData(ctx, userID)
-	if err != nil {
-		return nil, err
-	}
-
-	userInfo, err := json.Marshal(rawUserInfo)
+	requestBody, err := json.Marshal(data)
 	if err != nil {
 		return nil, domain.NewInternalServerError(
 			domain.CodeInternalServerError,
-			"Failed to marshal user info",
+			"Failed to marshal llm request body",
 			err,
 		)
 	}
 
-	requestLLM, err := http.NewRequestWithContext(ctx, method, customURL, bytes.NewReader(userInfo))
+	requestLLM, err := http.NewRequestWithContext(ctx, method, customURL, bytes.NewReader(requestBody))
 	if err != nil {
 		return nil, domain.NewInternalServerError(
 			domain.CodeInternalServerError,

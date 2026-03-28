@@ -70,7 +70,7 @@ func (llm *LLM) Analysis(ctx *echo.Context) error {
 //
 //	@Tags		llm
 //	@Param		vacancy	body		model.Vacancy	true	"vacancy"
-//	@Success	200		{object}	string
+//	@Success	200		{object}	model.CoverLetter
 //	@Failure	400		{object}	domain.ErrorWrapper
 //	@Failure	401		{object}	domain.ErrorWrapper
 //	@Failure	403		{object}	domain.ErrorWrapper
