@@ -48,7 +48,7 @@ func AddHandlers(config *config.Config, server *echo.Echo, handlers *Handlers) {
 
 	groupLLM.POST("/vacancies", handlers.llm.FindVacancies)
 	groupLLM.POST("/analysis", handlers.llm.Analysis)
-	groupLLM.POST("/generate", handlers.llm.Analysis)
+	groupLLM.POST("/generate", handlers.llm.GenerateCoverLetter)
 }
 
 func InitJWTConfig(secretKey []byte) echojwt.Config {
