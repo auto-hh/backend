@@ -30,14 +30,62 @@ func NewLLM(service service.ILLM) *LLM {
 //	@Security	BearerAuth
 //	@Router		/llm/vacancies [post].
 func (llm *LLM) FindVacancies(ctx *echo.Context) error {
-	userID, err := middleware.GetUserID(ctx)
+	_, err := middleware.GetUserID(ctx)
 	if err != nil {
 		return domain.MapAppError(ctx, err)
 	}
 
-	vacancies, err := llm.service.FindVacancies(ctx.Request().Context(), userID)
-	if err != nil {
-		return domain.MapAppError(ctx, err)
+	// vacancies, err := llm.service.FindVacancies(ctx.Request().Context(), userID)
+	// if err != nil {
+	// 	return domain.MapAppError(ctx, err)
+	// }
+	vacancies := []model.Vacancy{
+        {
+            JobTitle: "Frontend Developer",
+            Salary: "150 000 - 220 000 ₽",
+            City: "Москва",
+            Body: "Разработка веб-приложений на React и TypeScript. Опыт работы от 2 лет.",
+            Link: "https://hh.ru/vacancy/1",
+            WorkFormat: "офис",
+            Score: 1.0,
+        },
+        {
+            JobTitle: "Backend Developer",
+            Salary: "200 000 - 300 000 ₽",
+            City: "Санкт-Петербург",
+            Body: "Разработка микросервисов на Node.js и Python. Опыт работы от 3 лет.",
+            Link: "https://hh.ru/vacancy/2",
+            WorkFormat: "офис",
+            Score: 0.85,
+        },
+        {
+            JobTitle: "Fullstack Developer",
+            Salary: "120 000 - 180 000 ₽",
+            City: "Казань",
+            Body: "Разработка fullstack-приложений для стартапов. React + Node.js.",
+            Link: "https://hh.ru/vacancy/3",
+            WorkFormat: "офис",
+            Score: 1.0,
+        },
+        {
+            JobTitle: "DevOps Engineer",
+            Salary: "250 000 - 350 000 ₽",
+            City: "Москва",
+            Body: "Автоматизация инфраструктуры и CI/CD процессов. Kubernetes, Docker, AWS.",
+            Link: "https://hh.ru/vacancy/4",
+            WorkFormat: "офис",
+            Score: 0.6,
+        },
+        {
+            JobTitle: "QA Engineer",
+            Salary: "100 000 - 160 000 ₽",
+            City: "Новосибирск",
+            Body: "Тестирование веб и мобильных приложений. Playwright, Jest, Postman.",
+            Link: "https://hh.ru/vacancy/5",
+            WorkFormat: "офис",
+            Score: 1.0,
+        },
+
 	}
 
 	return domain.JSON(ctx, http.StatusOK, vacancies)
