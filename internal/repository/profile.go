@@ -24,7 +24,7 @@ func (p *Profile) GetProfileData(ctx context.Context, userID uuid.UUID) (model.P
 	query := `
 		SELECT experience, job_title, grade, work_format, salary, city, about_me, recent_jobs
 		FROM profiles
-		WHERE id = $1::UUID
+		WHERE user_id = $1::UUID;
 	`
 
 	var data model.Profile
