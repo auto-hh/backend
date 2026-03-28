@@ -135,7 +135,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/model.CoverLetter"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/domain.ErrorWrapper"
                         }
                     },
                     "401": {
@@ -409,6 +415,17 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "word": {
+                    "type": "string"
+                }
+            }
+        },
+        "model.CoverLetter": {
+            "type": "object",
+            "properties": {
+                "letter": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 }
             }

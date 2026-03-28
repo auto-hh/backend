@@ -32,6 +32,13 @@ definitions:
       word:
         type: string
     type: object
+  model.CoverLetter:
+    properties:
+      letter:
+        type: string
+      status:
+        type: string
+    type: object
   model.Profile:
     properties:
       about_me:
@@ -142,7 +149,11 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/model.CoverLetter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
         "401":
           description: Unauthorized
           schema:
