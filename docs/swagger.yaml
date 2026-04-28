@@ -1,0 +1,305 @@
+definitions:
+  domain.AppErrorCode:
+    enum:
+    - BAD_REQUEST
+    - NOT_FOUND
+    - UNAUTHORIZED
+    - FORBIDDEN
+    - INTERNAL_SERVER_ERROR
+    type: string
+    x-enum-varnames:
+    - CodeBadRequest
+    - CodeNotFound
+    - CodeUnauthorized
+    - CodeForbidden
+    - CodeInternalServerError
+  domain.ErrorResponse:
+    properties:
+      code:
+        $ref: '#/definitions/domain.AppErrorCode'
+    type: object
+  domain.ErrorWrapper:
+    properties:
+      error:
+        $ref: '#/definitions/domain.ErrorResponse'
+    type: object
+  model.Attribute:
+    properties:
+      is_word:
+        type: boolean
+      text:
+        type: string
+      weight:
+        type: number
+    type: object
+  model.CoverLetter:
+    properties:
+      letter:
+        type: string
+      status:
+        type: string
+    type: object
+  model.Profile:
+    properties:
+      about_me:
+        type: string
+      city:
+        type: string
+      experience:
+        type: string
+      grade:
+        type: string
+      job_title:
+        type: string
+      recent_jobs:
+        type: string
+      salary:
+        type: integer
+      work_format:
+        type: string
+    type: object
+  model.Vacancy:
+    properties:
+      body:
+        type: string
+      city:
+        type: string
+      job_title:
+        type: string
+      link:
+        type: string
+      salary:
+        type: string
+      score:
+        type: number
+      work_format:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Auto HH
+  version: 0.1.0
+paths:
+  /auth/begin:
+    get:
+      responses:
+        "302":
+          description: Found
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      tags:
+      - auth
+  /auth/complete:
+    get:
+      responses:
+        "302":
+          description: Found
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      tags:
+      - auth
+  /health:
+    get:
+      responses:
+        "200":
+          description: OK
+      tags:
+      - health
+  /llm/analysis:
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Attribute'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - llm
+  /llm/generate:
+    post:
+      parameters:
+      - description: vacancy
+        in: body
+        name: vacancy
+        required: true
+        schema:
+          $ref: '#/definitions/model.Vacancy'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.CoverLetter'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - llm
+  /llm/vacancies:
+    post:
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Vacancy'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - llm
+  /user/has-profile:
+    get:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - user
+  /user/me:
+    get:
+      responses:
+        "204":
+          description: No Content
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - user
+  /user/profile:
+    get:
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.Profile'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - user
+    post:
+      parameters:
+      - description: profile
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/model.Profile'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorWrapper'
+      security:
+      - BearerAuth: []
+      tags:
+      - user
+securityDefinitions:
+  BearerAuth:
+    in: cookie
+    name: auto-hh-access-key.
+    type: apiKey
+swagger: "2.0"

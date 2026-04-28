@@ -1,6 +1,7 @@
 package model
 
 type Attribute struct {
-	Word  string  `json:"word"`
-	Score float64 `json:"score"`
+	IsWord bool    `json:"is_word"`
+	Text   string  `json:"text"`
+	Weight  float64 `json:"weight"`
 }

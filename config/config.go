@@ -8,20 +8,20 @@ import (
 )
 
 type Config struct {
-	LogLevel              slog.Level
-	port                  int
-	SecretKey             []byte
-	JWTExpirationDuration time.Duration
+	LogLevel                slog.Level
+	port                    int
+	SecretKey               []byte
+	JWTExpirationDuration   time.Duration
 	StateExpirationDuration time.Duration
-	ClientID string
-	ClientSecret string
-	RedirectURI string
-	AppName string
-	AppVersion string
-	DevContact string
-	SiteURL string
-	LLMPath               string
-	postgresConfig        *PostgresConfig
+	ClientID                string
+	ClientSecret            string
+	RedirectURI             string
+	AppName                 string
+	AppVersion              string
+	DevContact              string
+	SiteURL                 string
+	LLMPath                 string
+	postgresConfig          *PostgresConfig
 }
 
 func LoadConfig() (*Config, error) {
@@ -43,6 +43,7 @@ func LoadConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	stateExpirationDuration, err := strconv.Atoi(keyStateExpirationDuration.GetValueDefault("10"))
 	if err != nil {
 		return nil, err
@@ -61,20 +62,20 @@ func LoadConfig() (*Config, error) {
 	postgresConfig := LoadPostgresConfig()
 
 	config := &Config{
-		LogLevel:              logLevel,
-		port:                  port,
-		SecretKey:             secretKey,
-		JWTExpirationDuration: time.Duration(jwtExpirationDuration) * time.Hour,
+		LogLevel:                logLevel,
+		port:                    port,
+		SecretKey:               secretKey,
+		JWTExpirationDuration:   time.Duration(jwtExpirationDuration) * time.Hour,
 		StateExpirationDuration: time.Duration(stateExpirationDuration) * time.Minute,
-		ClientID: clientID,
-		ClientSecret: clientSecret,
-		RedirectURI: redirectURI,
-		AppName: appName,
-		AppVersion: appVersion,
-		DevContact: devContact,
-		SiteURL: siteURL,
-		LLMPath:               llmPath,
-		postgresConfig:        postgresConfig,
+		ClientID:                clientID,
+		ClientSecret:            clientSecret,
+		RedirectURI:             redirectURI,
+		AppName:                 appName,
+		AppVersion:              appVersion,
+		DevContact:              devContact,
+		SiteURL:                 siteURL,
+		LLMPath:                 llmPath,
+		postgresConfig:          postgresConfig,
 	}
 
 	return config, nil

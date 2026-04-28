@@ -2,7 +2,7 @@ package model
 
 type Complete struct {
 	State string `query:"state"`
-	Code string `query:"code"`
+	Code  string `query:"code"`
 }
 
 type HHData struct {
@@ -12,7 +12,7 @@ type HHData struct {
 }
 
 type UserData struct {
-	ID string `json:"id"`
+	ID        string `json:"id"`
 	FirstName string `json:"first_name"`
-	LastName string `json:"last_name"`
+	LastName  string `json:"last_name"`
 }

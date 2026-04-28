@@ -23,6 +23,10 @@ linters:
             - "disable-checks-on-methods"
             - "disable-checks-on-types"
             - "disable-checks-on-variables"
+    tagliatelle:
+      case:
+        rules:
+          json: snake
 
 formatters:
   enable:
